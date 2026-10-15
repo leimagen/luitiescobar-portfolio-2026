@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "sanity dev",
     "build": "sanity build",
-    "deploy:cf": "sanity build && wrangler deploy"
+    "deploy:cf": "sanity build --yes && wrangler deploy --config wrangler.jsonc"
   },
   "dependencies": {
     "@sanity/icons": "^5.2.3",

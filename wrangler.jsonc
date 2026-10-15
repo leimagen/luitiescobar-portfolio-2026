@@ -14,8 +14,11 @@
       "migrations_dir": "migrations"
     }
   ],
-  "routes": [
-    { "pattern": "luitiescobar.com", "custom_domain": true },
-    { "pattern": "www.luitiescobar.com", "custom_domain": true }
-  ]
+  // Preview on *.workers.dev until the real content is in. To go live on the main domain
+  // (replaces the site currently served there), uncomment the routes below and redeploy.
+  "workers_dev": true
+  // "routes": [
+  //   { "pattern": "luitiescobar.com", "custom_domain": true },
+  //   { "pattern": "www.luitiescobar.com", "custom_domain": true }
+  // ]
 }

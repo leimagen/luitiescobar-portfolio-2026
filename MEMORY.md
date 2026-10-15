@@ -12,7 +12,9 @@ Multidisciplinary portfolio for Luiti Escobar (Valencia, Spain): Graphic Design,
 Bilingual EN (`/`) and ES (`/es/`), switchable in the header. Minimal light palette with blurred gradient
 blobs, glass "lens" circles and geometric patterns (zigzag, dot grid, line triangles).
 
-- Domain: `luitiescobar.com` (Cloudflare). Studio planned at `cms.luitiescobar.com`.
+- Domain: `luitiescobar.com` (Cloudflare) — **still serves the previous site**; the new one is not on it yet.
+- New site (preview): https://luitiescobar.<account>.workers.dev (Worker `luitiescobar`)
+- Studio (live): https://cms.luitiescobar.com (Worker `luitiescobar-cms`, Sanity login with GitHub)
 - Sanity: org `luitiescobar` (`oasl4bj9d`), project **`cp45bc1k`**, dataset `production` (public read).
   Login via the user's GitHub account. Manage at https://www.sanity.io/manage
 - Cloudflare account: (see MEMORY.private.md) (`<account-id>`); wrangler is logged in on this machine.
@@ -68,7 +70,7 @@ Publishing in Sanity requires a **rebuild + deploy** of the site (webhook automa
 
 - `GET /api/likes?slugs=a,b` → counts + which ones this visitor liked. `POST /api/likes {slug, liked}`.
 - One like per visitor per project: salted SHA-256 of IP + user agent (no personal data stored).
-- Optional secret `LIKES_SALT` (`npx wrangler secret put LIKES_SALT`).
+- Secret `LIKES_SALT` is set on the Worker (random; rotate with `npx wrangler secret put LIKES_SALT`).
 - D1 id `c9b2180e-c9e1-4c22-b3fd-65a4e78272a3` (region WEUR); table `likes` already created remotely.
 - Local: `npx wrangler d1 migrations apply luitiescobar-likes --local`, then `npm run build && npm run preview`.
 
@@ -78,7 +80,7 @@ Publishing in Sanity requires a **rebuild + deploy** of the site (webhook automa
 npm run dev                      # site dev server
 npm run build && npm run preview # production build, runs on workerd locally (API + D1 local)
 npx astro check                  # type-check
-npx wrangler deploy              # deploy site (after build)
+npx wrangler deploy              # deploy site (after build) → workers.dev until routes are enabled
 cd studio && npm run dev         # Studio locally (needs studio/.env)
 cd studio && npm run deploy:cf   # build + deploy Studio to cms.luitiescobar.com
 cd studio && npx sanity exec scripts/seedSettings.ts --with-user-token   # create Site settings if missing
@@ -108,7 +110,9 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - [x] Sanity Studio schemas + site data layer + likes API/D1 (tested locally)
 - [x] Sanity project `cp45bc1k` created, `.env` files written, CORS (localhost:3333, cms.luitiescobar.com),
       "Site settings" seeded from the code defaults (`studio/scripts/seedSettings.ts`, never overwrites)
-- [ ] Deploy site to Cloudflare (`luitiescobar.com`) and Studio (`cms.luitiescobar.com`)
+- [x] Studio deployed to cms.luitiescobar.com; site deployed to the workers.dev preview; likes verified in production
+- [ ] Switch `luitiescobar.com` to the new site: uncomment `routes` in `wrangler.jsonc`, build, deploy
+      (replaces the current site — only when the user says so, ideally after real content is in)
 - [ ] Migrate real content into Sanity (projects, covers, case studies)
 - [ ] Rebuild on publish (Sanity webhook → GitHub Action / Cloudflare build)
 - [ ] Contact form backend (Worker + email service)
