@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Blob from '../components/Blob.astro';
+import { disciplines } from '../data/disciplines';
+import { email, location, socials } from '../data/site';
+import { getLang, useTranslations } from '../i18n/utils';
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const types = [...disciplines.map((d) => d.name[lang]), t('form.type.other')];
+---
+
+<BaseLayout title={t('contact.meta')} description={t('contact.text')} current="contact">
+  <section class="container contact">
+    <div class="contact__info">
+      <p class="label">{t('contact.label')}</p>
+      <h1>{t('contact.title.1')} <span>{t('contact.title.2')}</span></h1>
+      <p class="contact__text">{t('contact.text')}</p>
+      <p class="avail"><i aria-hidden="true"></i>{location[lang]} — {t('contact.availability')}</p>
+
+      <dl class="channels">
+        <div>
+          <dt class="label">{t('contact.email')}</dt>
+          <dd><a class="mail" href={`mailto:${email}`}>{email}</a></dd>
+        </div>
+        <div>
+          <dt class="label">{t('contact.social')}</dt>
+          <dd>
+            <ul>
+              {socials.map((s) => <li><a href={s.href} rel="me noopener" target="_blank">{s.label} ↗</a></li>)}
+            </ul>
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="contact__form">
+      <Blob class="cf-blob-a" from="var(--ai-a)" to="var(--ai-b)" blur={60} opacity={0.45} />
+      <Blob class="cf-blob-b" from="var(--motion-a)" to="var(--motion-b)" blur={60} opacity={0.4} />
+
+      <!-- No backend yet: the script turns the submission into a pre-filled email (mailto). -->
+      <form class="form" data-contact-form data-to={email} action={`mailto:${email}`} method="post" enctype="text/plain">
+        <h2>{t('form.title')}</h2>
+
+        <div class="field-row">
+          <label class="field">
+            <span class="label">{t('form.name')}</span>
+            <input name="name" type="text" autocomplete="name" required />
+          </label>
+          <label class="field">
+            <span class="label">{t('form.email')}</span>
+            <input name="email" type="email" autocomplete="email" required />
+          </label>
+        </div>
+
+        <fieldset class="field">
+          <legend class="label">{t('form.type')}</legend>
+          <div class="types">
+            {types.map((type, i) => (
+              <label class="type">
+                <input type="radio" name="type" value={type} checked={i === 0} />
+                <span>{type}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <label class="field">
+          <span class="label">{t('form.message')}</span>
+          <textarea name="message" rows="5" required></textarea>
+        </label>
+
+        <button type="submit" class="submit">{t('form.send')} <span aria-hidden="true">→</span></button>
+        <p class="note">{t('form.note')}</p>
+      </form>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = new FormData(form);
+      const subject = `${data.get('type')} — ${data.get('name')}`;
+      const body = `${data.get('message')}\n\n${data.get('name')}\n${data.get('email')}`;
+      window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  });
+</script>
+
+<style>
+  .contact { display: grid; gap: 48px; padding-top: 32px; }
+
+  /* ---------- info ---------- */
+  .contact__info .label { margin-bottom: 18px; }
+  h1 { font-size: clamp(44px, 12vw, 92px); font-weight: 200; line-height: 1; letter-spacing: -.03em; }
+  h1 span { display: block; }
+  .contact__text { margin-top: 20px; max-width: 420px; font-size: 17px; color: var(--ink-2); }
+  .avail { display: flex; align-items: center; gap: 10px; margin-top: 16px; font-size: 14px; color: var(--ink-2); }
+  .avail i { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--three-b); }
+  .avail i::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--three-b); animation: pulse 2s var(--ease) infinite; }
+  @keyframes pulse { to { transform: scale(2.6); opacity: 0; } }
+
+  .channels { display: grid; gap: 28px; margin-top: 40px; }
+  .channels dd { margin-top: 8px; }
+  .mail { font-size: clamp(20px, 5.6vw, 28px); font-weight: 300; border-bottom: 1px solid currentColor; overflow-wrap: anywhere; }
+  .channels ul { display: flex; flex-wrap: wrap; gap: 8px 20px; list-style: none; font-size: 16px; }
+  .channels ul a, .mail { transition: color .2s; }
+  .channels ul a:hover, .mail:hover { color: var(--accent, var(--motion-b)); }
+
+  /* ---------- form ---------- */
+  .contact__form { position: relative; isolation: isolate; }
+  .contact__form :global(.cf-blob-a) { z-index: -1; width: 220px; height: 220px; left: -60px; top: -40px; }
+  .contact__form :global(.cf-blob-b) { z-index: -1; width: 240px; height: 240px; right: -60px; bottom: -50px; }
+
+  .form {
+    display: grid; gap: 20px; padding: 24px;
+    border-radius: 24px; border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  }
+  .form h2 { font-size: 24px; font-weight: 300; letter-spacing: -.01em; }
+  .field-row { display: grid; gap: 20px; }
+  .field { display: grid; gap: 8px; border: 0; min-width: 0; }
+  .field .label { font-size: 11px; }
+  input[type='text'], input[type='email'], textarea {
+    width: 100%; padding: 12px 14px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--bg);
+    font: inherit; font-size: 16px; color: var(--ink);
+    transition: border-color .2s, box-shadow .2s;
+  }
+  textarea { resize: vertical; min-height: 120px; }
+  input:focus-visible, textarea:focus-visible { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px color-mix(in srgb, var(--motion-b) 20%, transparent); }
+
+  .types { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .type input { position: absolute; opacity: 0; pointer-events: none; }
+  .type span {
+    display: inline-block; padding: 8px 14px; border-radius: 99px; border: 1px solid var(--line);
+    background: var(--surface); font-size: 14px; cursor: pointer; transition: background .2s, color .2s, border-color .2s;
+  }
+  .type span:hover { border-color: var(--ink); }
+  .type input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  .type input:focus-visible + span { outline: 2px solid var(--motion-b); outline-offset: 2px; }
+
+  .submit {
+    display: inline-flex; justify-content: center; align-items: center; gap: 10px; margin-top: 4px;
+    padding: 14px 24px; border-radius: 99px; background: var(--ink); color: var(--bg);
+    font-size: 15px; font-weight: 400; transition: transform .3s var(--ease), box-shadow .3s;
+  }
+  .submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgb(20 20 20 / .5); }
+  .note { font-size: 12px; color: var(--muted); text-align: center; }
+
+  @media (min-width: 768px) {
+    .field-row { grid-template-columns: 1fr 1fr; }
+    .form { padding: 36px; border-radius: 32px; gap: 24px; }
+    .form h2 { font-size: 28px; }
+    .contact__form :global(.cf-blob-a) { width: 360px; height: 340px; left: -140px; top: -90px; }
+    .contact__form :global(.cf-blob-b) { width: 420px; height: 420px; right: -160px; bottom: -140px; }
+  }
+
+  @media (min-width: 1024px) {
+    .contact { grid-template-columns: 1fr 560px; gap: 80px; align-items: start; padding-top: 24px; }
+    .contact__info { position: sticky; top: 140px; }
+    .contact__text { font-size: 20px; }
+    .submit { justify-self: start; }
+    .note { text-align: left; }
+  }
+</style>
