@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luiti Escobar — Home</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* ---------- Hero ---------- */
+  .hero { position: relative; padding: 70px 0 120px; }
+  .hero .container { position: relative; display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; min-height: 600px; }
+  .hero-copy { position: relative; z-index: 3; }
+  .hero-copy .small { font-size: 22px; color: var(--ink-2); margin-bottom: 6px; }
+  .hero-copy h1 { font-size: clamp(64px, 8.4vw, 124px); font-weight: 200; line-height: .92; letter-spacing: -.035em; text-transform: uppercase; }
+  .hero-copy h1 em { font-style: normal; font-weight: 400; }
+  .hero-copy .disc { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 99px; border: 1px solid var(--line); font-size: 14px; background: var(--surface); }
+  .chip i { width: 9px; height: 9px; border-radius: 50%; }
+  .hero-art { position: relative; height: 560px; }
+  .hero-art .b1 { width: 400px; height: 440px; left: 70px; top: 40px; }
+  .hero-art .b2 { width: 220px; height: 220px; left: -40px; top: 330px; --blur: 34px; opacity: .8; }
+  .hero-art .l1 { width: 230px; height: 230px; left: 330px; top: 10px; }
+  .hero-art .zig { left: 360px; top: 380px; width: 150px; }
+  .scroll-hint { position: absolute; left: 0; bottom: -60px; display: flex; align-items: center; gap: 12px; }
+  .scroll-hint span { width: 1px; height: 38px; background: var(--ink); }
+
+  /* ---------- Intro teaser ---------- */
+  .intro { display: grid; grid-template-columns: 220px 1fr; gap: 40px; padding: 40px 0 140px; border-top: 1px solid var(--line); }
+  .intro p { font-size: 34px; line-height: 1.3; font-weight: 200; letter-spacing: -.01em; max-width: 880px; }
+  .intro p strong { font-weight: 400; }
+  .intro .arrow-link { margin-top: 32px; font-size: 16px; }
+
+  /* ---------- Discipline cards ("that's the BLOB") ---------- */
+  .sec-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 40px; }
+  .sec-head h2 { font-size: 48px; font-weight: 200; letter-spacing: -.02em; }
+  .disciplines { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .dcard {
+    position: relative; overflow: hidden; height: 440px; border-radius: 24px;
+    background: var(--surface); border: 1px solid var(--line); padding: 36px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: transform .5s cubic-bezier(.2,.7,.2,1);
+  }
+  .dcard:hover { transform: translateY(-4px); }
+  .dcard .top { position: relative; z-index: 3; display: flex; justify-content: space-between; }
+  .dcard .word { position: relative; z-index: 3; }
+  .dcard .word small { display: block; font-size: 18px; color: var(--ink-2); }
+  .dcard .word strong { display: block; font-size: 76px; font-weight: 200; line-height: .95; letter-spacing: -.02em; text-transform: uppercase; }
+  .dcard .bottom { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--ink-2); }
+  .dcard .go { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--ink); display: grid; place-items: center; }
+
+  /* ---------- Contact strip ---------- */
+  .contact-strip { position: relative; overflow: hidden; margin-top: 140px; padding: 110px 0; border-radius: 32px; background: var(--surface); border: 1px solid var(--line); text-align: center; }
+  .contact-strip h2 { position: relative; z-index: 3; font-size: clamp(48px, 6vw, 92px); font-weight: 200; letter-spacing: -.03em; line-height: 1; }
+  .contact-strip p { position: relative; z-index: 3; margin: 22px 0 36px; color: var(--ink-2); }
+  .contact-strip .actions { position: relative; z-index: 3; display: flex; justify-content: center; gap: 12px; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container">
+    <a class="logo" href="home.html">luiti<span>escobar</span></a>
+    <ul>
+      <li><a href="gallery.html">Graphic Design</a></li>
+      <li><a href="gallery.html">Motion</a></li>
+      <li><a href="gallery.html">AI Media</a></li>
+      <li><a href="gallery.html">3D</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="lang" role="group" aria-label="Language"><button aria-pressed="true">EN</button><button aria-pressed="false">ES</button></div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <div class="hero-copy">
+        <p class="small">hi, I'm Luiti Escobar —</p>
+        <h1>Multi<br><em>disciplinary</em><br>designer</h1>
+        <div class="disc">
+          <span class="chip"><i style="background:var(--design-b)"></i>Graphic Design</span>
+          <span class="chip"><i style="background:var(--motion-b)"></i>Motion</span>
+          <span class="chip"><i style="background:var(--ai-b)"></i>AI Media</span>
+          <span class="chip"><i style="background:var(--three-b)"></i>3D</span>
+        </div>
+        <div class="scroll-hint label"><span></span>scroll</div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="blob blob--design b1"></div>
+        <div class="blob blob--motion b2"></div>
+        <div class="lens l1"></div>
+        <svg class="geo zig" viewBox="0 0 150 90" fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M0 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8"/>
+          <path d="M0 24 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8"/>
+          <path d="M0 40 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8"/>
+          <path d="M0 56 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8"/>
+          <path d="M0 72 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8"/>
+          <path d="M0 88 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="container intro">
+    <p class="label">(About)</p>
+    <div>
+      <p>I'm a designer working across <strong>branding, motion, AI-generated media and 3D</strong>. I like ideas that look simple and feel alive — identities that move, renders that feel touchable and images that couldn't exist any other way.</p>
+      <a class="arrow-link" href="#">More about me <span>→</span></a>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="sec-head">
+      <h2>What I do</h2>
+      <span class="label">04 disciplines</span>
+    </div>
+    <div class="disciplines">
+      <a class="dcard" href="gallery.html">
+        <div class="top label"><span>01/04</span><span>Branding · Ads · Web</span></div>
+        <div class="blob blob--design" style="width:300px;height:320px;right:40px;top:40px"></div>
+        <div class="lens" style="width:150px;height:150px;right:30px;top:90px"></div>
+        <div class="word"><small>that's the</small><strong>Graphic<br>Design</strong></div>
+        <div class="bottom"><span>24 projects</span><span class="go">→</span></div>
+      </a>
+      <a class="dcard" href="gallery.html">
+        <div class="top label"><span>02/04</span><span>2D · 2.5D · 3D</span></div>
+        <div class="blob blob--motion blob--soft" style="width:320px;height:330px;right:30px;top:40px;--blur:14px"></div>
+        <svg class="geo" style="right:300px;top:60px;width:110px" viewBox="0 0 150 90" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M0 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8"/><path d="M0 24 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8"/><path d="M0 40 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8"/><path d="M0 56 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8"/></svg>
+        <div class="word"><small>that's the</small><strong>Motion<br>Design</strong></div>
+        <div class="bottom"><span>18 projects</span><span class="go">→</span></div>
+      </a>
+      <a class="dcard" href="gallery.html">
+        <div class="top label"><span>03/04</span><span>Image · Video · Hybrid</span></div>
+        <div class="blob blob--ai" style="width:300px;height:300px;right:50px;top:60px"></div>
+        <svg class="geo" style="right:20px;top:150px;width:200px" viewBox="0 0 200 180" fill="none" stroke="currentColor" stroke-width="1">
+          <g transform="translate(100 90)">
+            <path d="M-90 -60 L90 -60 L0 85 Z"/>
+            <path d="M-90 -60 L90 -60 L0 85 Z" transform="rotate(8) scale(.9)"/>
+            <path d="M-90 -60 L90 -60 L0 85 Z" transform="rotate(16) scale(.8)"/>
+            <path d="M-90 -60 L90 -60 L0 85 Z" transform="rotate(24) scale(.7)"/>
+            <path d="M-90 -60 L90 -60 L0 85 Z" transform="rotate(32) scale(.6)"/>
+            <path d="M-90 -60 L90 -60 L0 85 Z" transform="rotate(40) scale(.5)"/>
+            <path d="M-90 -60 L90 -60 L0 85 Z" transform="rotate(48) scale(.4)"/>
+          </g>
+        </svg>
+        <div class="word"><small>that's the</small><strong>AI<br>Media</strong></div>
+        <div class="bottom"><span>11 projects</span><span class="go">→</span></div>
+      </a>
+      <a class="dcard" href="gallery.html">
+        <div class="top label"><span>04/04</span><span>Models · Interiors · Industrial</span></div>
+        <div class="blob blob--three blob--soft" style="width:300px;height:280px;right:60px;top:50px;--blur:22px"></div>
+        <div class="blob blob--three blob--soft" style="width:90px;height:90px;right:40px;top:300px;--blur:16px"></div>
+        <div class="geo dots" style="right:250px;top:200px;width:150px;height:150px"></div>
+        <div class="word"><small>that's the</small><strong>3D</strong></div>
+        <div class="bottom"><span>15 projects</span><span class="go">→</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="container" style="margin-top:140px">
+    <div class="sec-head">
+      <h2>Selected work</h2>
+      <a class="arrow-link" href="gallery.html">All projects →</a>
+    </div>
+    <div class="masonry" data-masonry="design,motion,three,ai" data-count="9"></div>
+  </section>
+
+  <section class="container">
+    <div class="contact-strip">
+      <div class="blob blob--ai blob--soft" style="width:340px;height:300px;left:-60px;top:-40px;--blur:60px;opacity:.55"></div>
+      <div class="blob blob--motion blob--soft" style="width:300px;height:300px;right:-40px;bottom:-80px;--blur:60px;opacity:.5"></div>
+      <h2>Let's make<br>something together</h2>
+      <p>Open to freelance projects, collaborations and full-time roles.</p>
+      <div class="actions">
+        <a class="btn btn--solid" href="#">hello@luitiescobar.com</a>
+        <a class="btn" href="#">Contact form</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <span>© 2026 Luiti Escobar</span>
+    <ul><li><a href="#">Instagram</a></li><li><a href="#">Behance</a></li><li><a href="#">LinkedIn</a></li><li><a href="#">Vimeo</a></li></ul>
+  </div>
+</footer>
+
+<script src="mock.js"></script>
+</body>
+</html>

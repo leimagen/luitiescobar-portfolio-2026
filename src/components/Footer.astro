@@ -1,0 +1,32 @@
+---
+const socials = [
+  { label: 'Instagram', href: '#' },
+  { label: 'Behance', href: '#' },
+  { label: 'LinkedIn', href: '#' },
+  { label: 'Vimeo', href: '#' },
+];
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <span class="footer__copy">© {new Date().getFullYear()} Luiti Escobar</span>
+    <ul>
+      {socials.map((s) => <li><a href={s.href} rel="me noopener" target="_blank">{s.label}</a></li>)}
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .footer { border-top: 1px solid var(--line); margin-top: 64px; }
+  .footer__inner { display: flex; flex-direction: column-reverse; gap: 20px; padding: 28px 0 40px; font-size: 14px; }
+  .footer__copy { color: var(--muted); font-size: 13px; }
+  ul { display: flex; gap: 20px; list-style: none; color: var(--ink-2); }
+  a:hover { color: var(--ink); }
+
+  @media (min-width: 768px) {
+    .footer { margin-top: 140px; }
+    .footer__inner { flex-direction: row; justify-content: space-between; align-items: center; height: 96px; padding: 0; }
+    .footer__copy { font-size: 14px; }
+    ul { gap: 24px; color: var(--muted); }
+  }
+</style>

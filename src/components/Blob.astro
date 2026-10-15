@@ -1,0 +1,44 @@
+---
+/**
+ * Organic gradient blob (same path as the Figma "Blob" component).
+ * Position/size it from the parent with the `class` prop.
+ */
+interface Props {
+  from: string;
+  to: string;
+  blur?: number;
+  opacity?: number;
+  class?: string;
+}
+
+const { from, to, blur = 0, opacity = 1, class: className } = Astro.props;
+const id = `blob-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<svg
+  class:list={['blob', className]}
+  viewBox="44 28 329 348"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  style={`--blur:${blur}px; opacity:${opacity}`}
+>
+  <defs>
+    <radialGradient id={id} cx="0.35" cy="0.3" r="0.8">
+      <stop offset="0" stop-color={from} />
+      <stop offset="1" stop-color={to} />
+    </radialGradient>
+  </defs>
+  <path
+    d="M312 68c48 38 70 110 56 172-14 63-64 118-128 132-65 14-142-14-176-72C30 242 40 160 82 104 124 48 200 20 252 30c22 4 42 18 60 38Z"
+    fill={`url(#${id})`}
+  />
+</svg>
+
+<style>
+  .blob {
+    position: absolute;
+    overflow: visible;
+    filter: blur(var(--blur));
+    pointer-events: none;
+  }
+</style>

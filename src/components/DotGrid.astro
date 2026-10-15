@@ -1,0 +1,19 @@
+---
+/** Dot-grid pattern used as a geometric accent next to blobs. */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div class:list={['dots', className]} aria-hidden="true"></div>
+
+<style>
+  .dots {
+    position: absolute;
+    aspect-ratio: 1;
+    background-image: radial-gradient(var(--ink) 1.2px, transparent 1.4px);
+    background-size: 14px 14px;
+    pointer-events: none;
+  }
+</style>

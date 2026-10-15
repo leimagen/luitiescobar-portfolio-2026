@@ -1,0 +1,96 @@
+---
+import type { Discipline } from '../data/disciplines';
+import { featuredFor, projectCountBy } from '../data/projects';
+import { getLang, localizePath, useTranslations } from '../i18n/utils';
+
+interface Props {
+  discipline: Discipline;
+  index: number;
+  total: number;
+}
+
+const { discipline: d, index, total } = Astro.props;
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const featured = featuredFor(d.id);
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<a class="dcard" href={localizePath(`/${d.slug}`, lang)} style={`--c1:${d.colors[0]};--c2:${d.colors[1]}`}>
+  <div class="dcard__top label"><span>{pad(index + 1)}/{pad(total)}</span><span>{d.tags[lang]}</span></div>
+
+  <figure class="dcard__featured" style={`background:linear-gradient(135deg, ${featured.cover[0]}, ${featured.cover[1]})`}>
+    <figcaption>{t('disciplines.featured')} · {featured.title}</figcaption>
+  </figure>
+
+  <p class="dcard__word">
+    <small>{t('disciplines.thats')}</small>
+    {d.word[lang].map((w) => <span>{w}</span>)}
+  </p>
+
+  <div class="dcard__bottom">
+    <span class="dcard__count"><i></i>{projectCountBy(d.id)} {t('disciplines.projects')}</span>
+    <span class="dcard__go" aria-hidden="true">→</span>
+  </div>
+</a>
+
+<style>
+  .dcard {
+    position: relative; overflow: hidden; isolation: isolate;
+    display: grid; grid-template-rows: auto auto 1fr auto; gap: 18px;
+    padding: 22px; height: 100%;
+    border-radius: 22px; border: 1px solid var(--line); background: var(--surface);
+    transition: transform .5s var(--ease), box-shadow .5s var(--ease);
+  }
+  /* discipline blob revealed on hover */
+  .dcard::before {
+    content: ""; position: absolute; z-index: -1; width: 70%; aspect-ratio: 1; right: -15%; top: -20%;
+    border-radius: 42% 58% 62% 38% / 45% 40% 60% 55%;
+    background: radial-gradient(circle at 35% 30%, var(--c1), var(--c2));
+    filter: blur(50px); opacity: 0; transform: scale(.7);
+    transition: opacity .6s var(--ease), transform .8s var(--ease);
+  }
+  .dcard:hover { transform: translateY(-4px); box-shadow: 0 30px 60px -40px rgb(20 20 20 / .25); }
+  .dcard:hover::before { opacity: .35; transform: scale(1); }
+
+  .dcard__top { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; }
+
+  .dcard__featured {
+    position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 236 / 150;
+    transition: transform .7s var(--ease);
+  }
+  .dcard:hover .dcard__featured { transform: scale(1.02); }
+  .dcard__featured figcaption {
+    position: absolute; left: 12px; right: 12px; bottom: 10px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .02em; text-transform: uppercase; color: #fff;
+  }
+
+  .dcard__word { align-self: end; display: flex; flex-direction: column; }
+  .dcard__word small { font-size: 15px; color: var(--ink-2); }
+  .dcard__word span { font-size: 52px; font-weight: 200; line-height: .95; letter-spacing: -.02em; text-transform: uppercase; }
+
+  .dcard__bottom { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--ink-2); }
+  .dcard__count { display: inline-flex; align-items: center; gap: 8px; }
+  .dcard__count i { width: 8px; height: 8px; border-radius: 50%; background: var(--c2); }
+  .dcard__go {
+    display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--ink); transition: background .3s, color .3s;
+  }
+  .dcard:hover .dcard__go { background: var(--ink); color: var(--bg); }
+
+  /* desktop: word left, featured cover right (Figma: Discipline card 590×440) */
+  @media (min-width: 1024px) {
+    .dcard {
+      grid-template-columns: 1fr 170px; grid-template-rows: auto 1fr auto;
+      column-gap: 24px; row-gap: 0; padding: 36px; min-height: 440px;
+    }
+    .dcard__top { grid-column: 1 / -1; font-size: 12px; }
+    .dcard__featured { grid-column: 2; grid-row: 2; aspect-ratio: auto; height: 268px; margin-top: 20px; align-self: start; }
+    .dcard__word { grid-column: 1; grid-row: 2; align-self: center; }
+    .dcard__word small { font-size: 18px; }
+    .dcard__word span { font-size: clamp(56px, 5.3vw, 76px); }
+    .dcard__bottom { grid-column: 1 / -1; font-size: 14px; }
+    .dcard__count i { width: 9px; height: 9px; }
+    .dcard__go { width: 44px; height: 44px; }
+  }
+</style>

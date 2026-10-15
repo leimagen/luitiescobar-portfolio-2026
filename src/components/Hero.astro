@@ -1,0 +1,124 @@
+---
+import { Image } from 'astro:assets';
+import profile from '../assets/images/profile.jpg';
+import Blob from './Blob.astro';
+import Lens from './Lens.astro';
+import DotGrid from './DotGrid.astro';
+import { disciplines } from '../data/disciplines';
+import { getLang, useTranslations } from '../i18n/utils';
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const lines = [t('hero.title.1'), t('hero.title.2'), t('hero.title.3')];
+// the "disciplinary" line carries the emphasis in both languages
+const emphasis = lines.findIndex((l) => /disciplin/i.test(l));
+// longest line drives the font size so every language fits the column (see .hero__title)
+const chars = Math.max(...lines.map((l) => l.length));
+---
+
+<section class="hero">
+  <div class="container hero__inner">
+    <Image
+      class="hero__photo"
+      src={profile}
+      alt="Luiti Escobar"
+      widths={[320, 480, 640, 960]}
+      sizes="(min-width: 1024px) 461px, min(75vw, 420px)"
+      loading="eager"
+      fetchpriority="high"
+    />
+
+    <div class="hero__art" aria-hidden="true">
+      <Blob class="hero__blob-a" from="#00ff99" to="#3a6bff" blur={34} opacity={0.8} />
+      <Blob class="hero__blob-b" from="#ff3c3c" to="#ff8a3c" />
+      <Lens class="hero__lens" />
+      <DotGrid class="hero__dots" />
+    </div>
+
+    <div class="hero__copy">
+      <p class="hero__greeting">{t('hero.greeting')}</p>
+      <h1 class="hero__title" style={`--chars:${chars}`}>
+        {lines.map((line, i) => <span class:list={{ em: i === emphasis }}>{line}</span>)}
+      </h1>
+      <ul class="chips">
+        {disciplines.map((d) => (
+          <li class="chip"><i style={`background:${d.colors[1]}`}></i>{d.name[lang]}</li>
+        ))}
+      </ul>
+    </div>
+
+    <p class="hero__scroll label" aria-hidden="true">{t('hero.scroll')}</p>
+  </div>
+</section>
+
+<style>
+  /* ---------- mobile first (Figma: Home — Mobile 375) ---------- */
+  /* 1u = 1px of the 375px Figma frame, scaled with the viewport and capped for tablets */
+  .hero { --u: min(100vw / 375, 1.5px); position: relative; }
+  .hero__inner { position: relative; padding-top: calc(24 * var(--u)); }
+
+  .hero__photo {
+    position: relative; z-index: 1;
+    margin-left: calc(-1 * var(--gutter));
+    width: calc(280 * var(--u)); height: calc(336 * var(--u));
+    object-fit: cover; object-position: 50% 20%;
+    border-radius: 0 10px calc(140 * var(--u)) 0;
+  }
+
+  .hero__art { position: absolute; inset: 0; pointer-events: none; }
+  .hero__art :global(.hero__blob-a) { left: calc(242 * var(--u)); top: calc(6 * var(--u)); width: calc(120 * var(--u)); height: calc(120 * var(--u)); z-index: 0; }
+  .hero__art :global(.hero__blob-b) { left: calc(230 * var(--u)); top: calc(126 * var(--u)); width: calc(190 * var(--u)); height: calc(210 * var(--u)); z-index: 0; }
+  .hero__art :global(.hero__lens) { left: calc(194 * var(--u)); top: calc(186 * var(--u)); width: calc(130 * var(--u)); z-index: 2; }
+  .hero__art :global(.hero__dots) { left: calc(285 * var(--u)); top: calc(305 * var(--u)); width: calc(64 * var(--u)); transform: rotate(45deg); z-index: 1; }
+
+  .hero__copy { position: relative; z-index: 1; margin-top: 36px; container-type: inline-size; }
+  .hero__greeting { font-size: 17px; color: var(--ink-2); margin-bottom: 6px; }
+  .hero__title {
+    /* The longest line may span 85% of the copy column (≈0.513em per glyph): its last letter
+       just touches the glass lens instead of hiding under it, in any language. */
+    --fit: calc(85cqi / (var(--chars) * 0.513));
+    display: flex; flex-direction: column;
+    font-size: min(clamp(40px, 11.7vw, 72px), var(--fit));
+    font-weight: 200; line-height: .92; letter-spacing: -.03em; text-transform: uppercase;
+  }
+  .hero__title .em { font-weight: 400; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin-top: 22px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 14px; border-radius: 99px;
+    background: var(--surface); border: 1px solid var(--line); font-size: 14px;
+  }
+  .chip i { width: 9px; height: 9px; border-radius: 50%; }
+
+  .hero__scroll { display: none; }
+
+  /* ---------- desktop (Figma: Home — Desktop 1440) ---------- */
+  @media (min-width: 1024px) {
+    /* offsets are Figma hero coords minus 24px (the taller header now absorbs that space) */
+    .hero__inner { min-height: 659px; padding-top: 104px; padding-bottom: 80px; border-bottom: 1px solid var(--line); }
+
+    .hero__photo {
+      position: absolute; top: 19px;
+      margin: 0; left: calc(50% - 50vw);
+      width: calc(50vw - 50% + 28.4%); height: 554px;
+      border-radius: 0 10px 233px 0;
+    }
+
+    .hero__art :global(.hero__blob-a) { left: 82.75%; top: -11px; width: 230px; height: 230px; }
+    .hero__art :global(.hero__blob-b) { left: 92.6%; top: 136px; width: 420px; height: 460px; }
+    .hero__art :global(.hero__lens) { left: 87.7%; top: 258px; width: 240px; }
+    .hero__art :global(.hero__dots) { left: 90%; top: 524px; width: 150px; }
+
+    .hero__copy { margin: 0 0 0 35.17%; }
+    .hero__greeting { font-size: 22px; }
+    .hero__title { font-size: min(clamp(72px, 7.8vw, 112px), var(--fit)); }
+    .chips { margin-top: 28px; gap: 10px; }
+
+    .hero__scroll {
+      display: flex; align-items: center; gap: 12px;
+      position: absolute; left: 0; top: 576px; letter-spacing: .3em;
+    }
+    .hero__scroll::before { content: ""; width: 1px; height: 38px; background: var(--ink); }
+  }
+</style>

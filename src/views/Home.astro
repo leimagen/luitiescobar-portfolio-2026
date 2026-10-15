@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import IntroTeaser from '../components/IntroTeaser.astro';
+import Disciplines from '../components/Disciplines.astro';
+import MasonryGrid from '../components/MasonryGrid.astro';
+import ContactStrip from '../components/ContactStrip.astro';
+import { projects } from '../data/projects';
+import { getLang, localizePath, useTranslations } from '../i18n/utils';
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+---
+
+<BaseLayout>
+  <Hero />
+  <IntroTeaser />
+  <Disciplines />
+
+  <section class="container work">
+    <div class="work__head">
+      <h2 class="section-title">{t('work.title')}</h2>
+      <a class="arrow-link" href={localizePath('/work', lang)}>{t('work.all')} <span aria-hidden="true">→</span></a>
+    </div>
+    <MasonryGrid projects={projects} />
+  </section>
+
+  <ContactStrip />
+</BaseLayout>
+
+<style>
+  .work { margin: 80px auto 72px; }
+  .work__head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 24px; }
+  .work__head .arrow-link { font-size: 14px; white-space: nowrap; }
+
+  @media (min-width: 1024px) {
+    .work { margin: 140px auto 120px; }
+    .work__head { margin-bottom: 40px; }
+    .work__head .arrow-link { font-size: 16px; }
+  }
+</style>

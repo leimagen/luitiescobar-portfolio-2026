@@ -1,0 +1,76 @@
+---
+import DisciplineCard from './DisciplineCard.astro';
+import { disciplines } from '../data/disciplines';
+import { getLang, useTranslations } from '../i18n/utils';
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+---
+
+<section class="disciplines">
+  <div class="container disciplines__head">
+    <h2 class="section-title">{t('disciplines.title')}</h2>
+    <span class="label desk">{t('disciplines.count')}</span>
+    <span class="label mob" aria-hidden="true">{t('disciplines.swipe')} →</span>
+  </div>
+
+  <ul class="disciplines__track" data-carousel>
+    {disciplines.map((d, i) => (
+      <li><DisciplineCard discipline={d} index={i} total={disciplines.length} /></li>
+    ))}
+  </ul>
+
+  <div class="container pager" aria-hidden="true">
+    {disciplines.map((_, i) => <span class:list={{ active: i === 0 }}></span>)}
+  </div>
+</section>
+
+<script>
+  // keep the pager dots in sync with the horizontal scroll position (mobile carousel)
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((track) => {
+    const dots = track.parentElement?.querySelectorAll('.pager span') ?? [];
+    const items = [...track.children] as HTMLElement[];
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const i = items.indexOf(e.target as HTMLElement);
+          dots.forEach((d, j) => d.classList.toggle('active', i === j));
+        });
+      },
+      { root: track, threshold: 0.6 },
+    );
+    items.forEach((el) => io.observe(el));
+  });
+</script>
+
+<style>
+  .disciplines__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; }
+  .desk { display: none; }
+
+  /* mobile: horizontal scroll-snap carousel with a peek of the next card */
+  .disciplines__track {
+    display: grid; grid-auto-flow: column; grid-auto-columns: min(280px, 78vw); gap: 12px;
+    overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    padding-inline: var(--gutter); scroll-padding-inline: var(--gutter);
+    list-style: none;
+  }
+  .disciplines__track::-webkit-scrollbar { display: none; }
+  .disciplines__track li { scroll-snap-align: start; min-height: 410px; }
+
+  .pager { display: flex; gap: 6px; margin-top: 18px; }
+  .pager span { width: 6px; height: 6px; border-radius: 3px; background: var(--line); transition: width .3s var(--ease), background .3s; }
+  .pager span.active { width: 18px; background: var(--ink); }
+
+  @media (min-width: 1024px) {
+    .disciplines__head { margin-bottom: 40px; }
+    .desk { display: inline; }
+    .mob, .pager { display: none; }
+    .disciplines__track {
+      width: min(var(--container), 100% - var(--gutter) * 2); margin-inline: auto;
+      grid-auto-flow: row; grid-template-columns: 1fr 1fr; gap: 20px;
+      overflow: visible; padding: 0;
+    }
+    .disciplines__track li { min-height: 0; }
+  }
+</style>
