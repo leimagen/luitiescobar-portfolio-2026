@@ -1,6 +1,8 @@
 import type { Lang } from '../i18n/ui';
 import type { Project } from './projects';
 import { disciplineById } from './disciplines';
+import { pick } from '../lib/cms';
+import type { CmsImage } from '../lib/sanity';
 
 /**
  * Case-study body blocks. They mirror what the CMS rich-text editor will produce
@@ -20,9 +22,14 @@ export interface CaseStudy {
   role: string;
   tools: string;
   lead: string;
+  /** placeholder body */
   body: Block[];
-  /** full-width image shown after the article */
+  /** CMS body (Portable Text); takes precedence over `body` */
+  portable?: unknown[];
+  /** full-width image shown after the article (placeholder) */
   closing?: { aspect: number; cover: [string, string]; alt: string };
+  /** full-width images after the article (CMS) */
+  gallery?: CmsImage[];
 }
 
 type Localized = Record<Lang, CaseStudy>;
@@ -97,6 +104,19 @@ function placeholder(p: Project, lang: Lang): CaseStudy {
 }
 
 export function getCaseStudy(p: Project, lang: Lang): CaseStudy {
+  const src = p.source;
+  if (src) {
+    return {
+      client: src.client ?? '',
+      year: src.year ?? src.date.slice(0, 4),
+      role: pick(src.role, lang) ?? '',
+      tools: src.tools ?? '',
+      lead: pick(src.lead, lang) ?? '',
+      body: [],
+      portable: (src.body?.[lang]?.length ? src.body[lang] : src.body?.en) ?? [],
+      gallery: src.gallery ?? [],
+    };
+  }
   return specific[p.slug]?.[lang] ?? placeholder(p, lang);
 }
 
@@ -104,4 +124,4 @@ export function getCaseStudy(p: Project, lang: Lang): CaseStudy {
 const titles: Record<string, Record<Lang, string>> = {
   'paper-cut-25d': { en: 'Paper Cut — a 2.5D story about slow mornings', es: 'Paper Cut — una historia 2.5D sobre mañanas lentas' },
 };
-export const pageTitle = (p: Project, lang: Lang) => titles[p.slug]?.[lang] ?? p.title;
+export const pageTitle = (p: Project, lang: Lang) => p.titles?.[lang] || titles[p.slug]?.[lang] || p.title;

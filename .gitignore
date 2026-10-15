@@ -25,3 +25,7 @@ pnpm-debug.log*
 
 # design source files (large)
 assets/*.psd
+
+# wrangler local state
+.wrangler/
+.dev.vars

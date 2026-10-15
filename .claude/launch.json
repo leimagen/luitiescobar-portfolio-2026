@@ -8,6 +8,12 @@
       "port": 4322
     },
     {
+      "name": "astro-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview", "--", "--port", "4323"],
+      "port": 4323
+    },
+    {
       "name": "design-mockups",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["-y", "serve", "design", "-l", "4321"],

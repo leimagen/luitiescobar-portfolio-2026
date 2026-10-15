@@ -1,0 +1,11 @@
+---
+import CoverMedia from '../CoverMedia.astro';
+import type { CmsImage } from '../../lib/sanity';
+
+// Portable Text: single inline image in a case study
+const { node } = Astro.props as { node: CmsImage };
+---
+
+<figure class="rich__single">
+  <CoverMedia image={node} sizes="(min-width: 1024px) 760px, 100vw" />
+</figure>

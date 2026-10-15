@@ -1,0 +1,21 @@
+{
+  // Portfolio site: prerendered pages served as static assets + /api/likes on the Worker.
+  // `main` and `assets` are filled in by @astrojs/cloudflare at build time (dist/server/wrangler.json).
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "luitiescobar",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "luitiescobar-likes",
+      "database_id": "c9b2180e-c9e1-4c22-b3fd-65a4e78272a3",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "routes": [
+    { "pattern": "luitiescobar.com", "custom_domain": true },
+    { "pattern": "www.luitiescobar.com", "custom_domain": true }
+  ]
+}

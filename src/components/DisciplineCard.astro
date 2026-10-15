@@ -1,6 +1,8 @@
 ---
+import CoverMedia from './CoverMedia.astro';
 import type { Discipline } from '../data/disciplines';
 import { featuredFor, projectCountBy } from '../data/projects';
+import { pageTitle } from '../data/caseStudies';
 import { getLang, localizePath, useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -19,8 +21,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <a class="dcard" href={localizePath(`/${d.slug}`, lang)} style={`--c1:${d.colors[0]};--c2:${d.colors[1]}`}>
   <div class="dcard__top label"><span>{pad(index + 1)}/{pad(total)}</span><span>{d.tags[lang]}</span></div>
 
-  <figure class="dcard__featured" style={`background:linear-gradient(135deg, ${featured.cover[0]}, ${featured.cover[1]})`}>
-    <figcaption>{t('disciplines.featured')} · {featured.title}</figcaption>
+  <figure class="dcard__featured" style={`background:linear-gradient(135deg, ${d.colors[0]}, ${d.colors[1]})`}>
+    {featured && (
+      <>
+        <CoverMedia image={featured.image} gradient={featured.cover} alt="" sizes="(min-width: 1024px) 170px, 240px" fill />
+        <figcaption>{t('disciplines.featured')} · {pageTitle(featured, lang)}</figcaption>
+      </>
+    )}
   </figure>
 
   <p class="dcard__word">
@@ -60,8 +67,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
     transition: transform .7s var(--ease);
   }
   .dcard:hover .dcard__featured { transform: scale(1.02); }
+  /* soft scrim so the caption stays legible over photos */
+  .dcard__featured::after { content: ""; position: absolute; inset: 50% 0 0; background: linear-gradient(transparent, rgb(0 0 0 / .35)); pointer-events: none; }
   .dcard__featured figcaption {
-    position: absolute; left: 12px; right: 12px; bottom: 10px;
+    position: absolute; z-index: 1; left: 12px; right: 12px; bottom: 10px;
     font-family: var(--mono); font-size: 10px; letter-spacing: .02em; text-transform: uppercase; color: #fff;
   }
 

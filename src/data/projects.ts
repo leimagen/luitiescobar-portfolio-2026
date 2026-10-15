@@ -1,12 +1,21 @@
 import type { DisciplineId } from './disciplines';
+import type { Lang } from '../i18n/ui';
+import { cms, type CmsProject } from '../lib/cms';
+import type { CmsImage } from '../lib/sanity';
 
 /**
- * Placeholder projects until the CMS (Sanity) is connected.
- * `cover` is a gradient stand-in; real projects will carry an image with its own aspect ratio.
+ * Projects come from Sanity when it is configured; otherwise the placeholders below are used.
+ * `cover` is a gradient stand-in shown when there's no image.
  */
 export interface Project {
   slug: string;
   title: string;
+  /** localized titles (CMS) */
+  titles?: Partial<Record<Lang, string>>;
+  /** cover image from the CMS */
+  image?: CmsImage;
+  /** full CMS document, used by the case-study page */
+  source?: CmsProject;
   discipline: DisciplineId;
   subcategory: string;
   /** width / height of the cover, drives the masonry proportions */
@@ -70,7 +79,7 @@ const rows: Record<DisciplineId, Row[]> = {
   ],
 };
 
-export const projects: Project[] = (Object.entries(rows) as [DisciplineId, Row[]][]).flatMap(([discipline, list]) =>
+const placeholders: Project[] = (Object.entries(rows) as [DisciplineId, Row[]][]).flatMap(([discipline, list]) =>
   list.map(([slug, title, subcategory, aspect, cover, likes, date, flags]) => ({
     slug, title, discipline, subcategory, aspect, cover, likes, date,
     featured: flags === 'featured' || flags === 'both',
@@ -78,14 +87,38 @@ export const projects: Project[] = (Object.entries(rows) as [DisciplineId, Row[]
   })),
 );
 
+const fromCms = (p: CmsProject): Project => ({
+  slug: p.slug,
+  title: p.title?.en ?? p.slug,
+  titles: p.title,
+  discipline: p.discipline,
+  subcategory: p.subcategory,
+  aspect: p.cover.dims?.aspectRatio ?? 4 / 5,
+  cover: ['#eceae4', '#e6e5df'],
+  image: p.cover,
+  // real counts are loaded from /api/likes in the browser
+  likes: 0,
+  date: p.date,
+  featured: p.featured,
+  selected: p.selected,
+  source: p,
+});
+
+// placeholders stay until the first real project is published
+export const projects: Project[] = cms?.projects.length ? cms.projects.map(fromCms) : placeholders;
+
 export const projectsFor = (id: DisciplineId) => projects.filter((p) => p.discipline === id).sort((a, b) => b.date.localeCompare(a.date));
 export const projectCountBy = (id: DisciplineId) => projects.filter((p) => p.discipline === id).length;
-export const featuredFor = (id: DisciplineId) => projects.find((p) => p.discipline === id && p.featured)!;
+/** Project shown on the discipline card: the one flagged as featured, else the latest. */
+export const featuredFor = (id: DisciplineId): Project | undefined =>
+  projects.find((p) => p.discipline === id && p.featured) ?? projectsFor(id)[0];
 
 /** Home "Selected work": interleave disciplines so the grid mixes colors. */
 const order: DisciplineId[] = ['design', 'motion', '3d', 'ai'];
 export const selectedWork = (() => {
-  const lists = order.map((id) => projects.filter((p) => p.discipline === id && p.selected));
+  const anySelected = projects.some((p) => p.selected);
+  // until projects are flagged in the CMS, show the latest ones
+  const lists = order.map((id) => projects.filter((p) => p.discipline === id && (p.selected || !anySelected)).slice(0, anySelected ? undefined : 3));
   const out: Project[] = [];
   for (let i = 0; lists.some((l) => l[i]); i++) lists.forEach((l) => l[i] && out.push(l[i]));
   return out;

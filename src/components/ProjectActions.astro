@@ -14,7 +14,7 @@ const t = useTranslations(lang);
 
 <!--
   Like + share. Sticky rail beside the article on desktop, floating pill on mobile.
-  Likes are remembered per browser for now; the shared counter arrives with the backend (Cloudflare D1).
+  Counts come from /api/likes (Cloudflare D1); without the API it falls back to a per-browser like.
 -->
 <div class="actions" data-actions data-slug={slug} data-likes={likes} data-copied={t('share.copied')}>
   <button class="actions__like" type="button" aria-pressed="false" aria-label={t('like.label')}>
@@ -28,29 +28,52 @@ const t = useTranslations(lang);
 </div>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-actions]').forEach((root) => {
-    const key = `liked:${root.dataset.slug}`;
-    const base = Number(root.dataset.likes);
+  import { fetchLikes, sendLike } from '../scripts/likes';
+
+  document.querySelectorAll<HTMLElement>('[data-actions]').forEach(async (root) => {
+    const slug = root.dataset.slug!;
+    const key = `liked:${slug}`;
     const like = root.querySelector<HTMLButtonElement>('.actions__like')!;
     const count = root.querySelector<HTMLElement>('.actions__count')!;
     const toast = root.querySelector<HTMLElement>('.actions__toast')!;
 
-    const read = () => { try { return localStorage.getItem(key) === '1'; } catch { return false; } };
-    const write = (v: boolean) => { try { v ? localStorage.setItem(key, '1') : localStorage.removeItem(key); } catch { /* storage unavailable */ } };
-    const render = (liked: boolean) => {
+    const remember = (v: boolean) => { try { v ? localStorage.setItem(key, '1') : localStorage.removeItem(key); } catch { /* storage unavailable */ } };
+    const remembered = () => { try { return localStorage.getItem(key) === '1'; } catch { return false; } };
+    const render = (liked: boolean, n: number) => {
       like.setAttribute('aria-pressed', String(liked));
-      count.textContent = String(base + (liked ? 1 : 0));
+      count.textContent = String(Math.max(0, n));
     };
 
-    render(read());
-    like.addEventListener('click', () => {
-      const liked = like.getAttribute('aria-pressed') !== 'true';
-      write(liked);
-      render(liked);
+    // server state when the API is up; otherwise a per-browser fallback on top of the static count
+    let total = Number(root.dataset.likes);
+    let liked = remembered();
+    let online = false;
+    const state = await fetchLikes([slug]);
+    if (state) {
+      online = true;
+      total = state.counts[slug] ?? 0;
+      liked = state.liked.includes(slug);
+      remember(liked);
+      render(liked, total);
+    } else {
+      render(liked, total + (liked ? 1 : 0));
+    }
+
+    like.addEventListener('click', async () => {
+      liked = !liked;
+      if (online) total += liked ? 1 : -1;
+      render(liked, online ? total : Number(root.dataset.likes) + (liked ? 1 : 0)); // optimistic
+      remember(liked);
       if (liked) {
         like.classList.remove('pop');
         void like.offsetWidth; // restart the animation
         like.classList.add('pop');
+      }
+      if (!online) return;
+      const res = await sendLike(slug, liked);
+      if (res) {
+        total = res.count;
+        render(res.liked, res.count);
       }
     });
 

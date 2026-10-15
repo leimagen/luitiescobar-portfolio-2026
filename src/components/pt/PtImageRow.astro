@@ -1,0 +1,12 @@
+---
+import CoverMedia from '../CoverMedia.astro';
+import type { CmsImage } from '../../lib/sanity';
+
+// Portable Text: row of 2–3 images side by side
+const { node } = Astro.props as { node: { images?: CmsImage[] } };
+const images = node.images ?? [];
+---
+
+<div class="rich__images is-row" style={`--n:${images.length}`}>
+  {images.map((img) => <CoverMedia image={img} sizes="(min-width: 1024px) 380px, 50vw" />)}
+</div>

@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Blob from '../components/Blob.astro';
 import RichBody from '../components/RichBody.astro';
+import CoverMedia from '../components/CoverMedia.astro';
 import ProjectActions from '../components/ProjectActions.astro';
 import MasonryGrid from '../components/MasonryGrid.astro';
 import { disciplineById } from '../data/disciplines';
@@ -33,7 +34,7 @@ const facts = [
   [t('project.year'), cs.year],
   [t('project.role'), cs.role],
   [t('project.tools'), cs.tools],
-];
+].filter(([, v]) => v);
 const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[1]})`;
 ---
 
@@ -46,24 +47,30 @@ const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[
       </nav>
       <h1>{title}</h1>
       <p class="lead">{cs.lead}</p>
-      <dl class="facts">
+      {facts.length > 0 && <dl class="facts">
         {facts.map(([k, v]) => <div><dt class="label">{k}</dt><dd>{v}</dd></div>)}
-      </dl>
+      </dl>}
     </header>
 
     <div class="container cover">
       <Blob class="cover__blob" from={d.colors[0]} to={d.colors[1]} blur={50} opacity={0.55} />
-      <div class="cover__img" role="img" aria-label={title} style={`background:${gradient(p.cover)}`}></div>
+      <CoverMedia class="cover__img" image={p.image} gradient={p.cover} aspect={16 / 9} alt={title} sizes="(min-width: 1264px) 1200px, 100vw" eager />
     </div>
 
     <div class="container p-body">
       <div class="p-body__article">
-        <RichBody blocks={cs.body} />
+        <RichBody blocks={cs.body} portable={cs.portable} />
       </div>
       <aside class="p-body__rail">
         <ProjectActions slug={p.slug} likes={p.likes} title={title} />
       </aside>
     </div>
+
+    {cs.gallery?.map((img) => (
+      <div class="container closing">
+        <CoverMedia image={img} sizes="(min-width: 1264px) 1200px, 100vw" />
+      </div>
+    ))}
 
     {cs.closing && (
       <div class="container closing">
@@ -71,12 +78,12 @@ const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[
       </div>
     )}
 
-    <nav class="container nextprev" aria-label={`${t('project.prev')} / ${t('project.next')}`}>
+    {siblings.length > 1 && <nav class="container nextprev" aria-label={`${t('project.prev')} / ${t('project.next')}`}>
       {[[prev, t('project.prev'), 'prev'], [next, t('project.next'), 'next']].map(([s, label, dir]) => {
         const item = s as Project;
         return (
           <a class:list={['np', `np--${dir}`]} href={localizePath(`/work/${item.slug}`, lang)} rel={dir as string}>
-            <span class="np__thumb" style={`background:${gradient(item.cover)}`}></span>
+            <span class="np__thumb"><CoverMedia image={item.image} gradient={item.cover} alt="" sizes="120px" fill /></span>
             <span class="np__text">
               <span class="label">{dir === 'prev' ? `← ${label}` : `${label} →`}</span>
               <strong>{pageTitle(item, lang)}</strong>
@@ -84,12 +91,12 @@ const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[
           </a>
         );
       })}
-    </nav>
+    </nav>}
 
-    <section class="container more">
+    {more.length > 0 && <section class="container more">
       <h2 class="section-title">{t('project.more')} {d.word[lang].join(' ')}</h2>
       <MasonryGrid projects={more} />
-    </section>
+    </section>}
   </article>
 </BaseLayout>
 
@@ -107,12 +114,12 @@ const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[
   /* ---------- cover ---------- */
   .cover { position: relative; margin-top: 36px; }
   .cover :global(.cover__blob) { width: 200px; height: 200px; right: -70px; top: -50px; }
-  .cover__img { position: relative; aspect-ratio: 16 / 9; border-radius: 18px; }
+  .cover :global(.cover__img) { position: relative; border-radius: 18px; }
 
   /* ---------- body ---------- */
   .p-body { margin-top: 48px; }
   .closing { margin-top: 16px; }
-  .closing div { border-radius: 18px; }
+  .closing > :global(*) { border-radius: 18px; }
 
   /* ---------- next / prev ---------- */
   .nextprev { display: grid; gap: 12px; margin-top: 72px; }
@@ -122,7 +129,7 @@ const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[
     transition: border-color .25s, transform .4s var(--ease);
   }
   .np:hover { border-color: var(--ink); transform: translateY(-2px); }
-  .np__thumb { flex: none; width: 88px; aspect-ratio: 4 / 3; border-radius: 12px; }
+  .np__thumb { flex: none; width: 88px; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; }
   .np__text { display: grid; gap: 4px; min-width: 0; }
   .np strong { font-size: 18px; font-weight: 300; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .np--next { flex-direction: row-reverse; text-align: right; }
@@ -137,7 +144,7 @@ const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[
     .facts dd { font-size: 16px; }
     .cover { margin-top: 56px; }
     .cover :global(.cover__blob) { width: 360px; height: 360px; right: -90px; top: 48px; }
-    .cover__img, .closing div { border-radius: 28px; }
+    .cover :global(.cover__img), .closing > :global(*) { border-radius: 28px; }
     .closing { margin-top: 64px; }
     .nextprev { grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 120px; }
     .np { padding: 18px; gap: 20px; border-radius: 22px; }

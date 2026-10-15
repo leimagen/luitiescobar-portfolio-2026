@@ -4,7 +4,7 @@ import { getLang, useTranslations } from '../i18n/utils';
 
 interface Props {
   title: string;
-  /** video file URL (mp4/webm). Without it the reel shows its poster and a "coming soon" note. */
+  /** Vimeo / YouTube link or a direct video file. Without it the reel shows a "coming soon" note. */
   src?: string;
   poster?: string;
 }
@@ -12,10 +12,22 @@ interface Props {
 const { title, src, poster } = Astro.props;
 const lang = getLang(Astro.currentLocale);
 const t = useTranslations(lang);
+
+// privacy-friendly embeds, loaded only after the visitor presses play
+function embedUrl(url?: string) {
+  if (!url) return undefined;
+  const yt = url.match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/)([\w-]{11})/);
+  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}?autoplay=1&rel=0&modestbranding=1`;
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=1&dnt=1&title=0&byline=0&portrait=0`;
+  return undefined;
+}
+const embed = embedUrl(src);
+const file = src && !embed ? src : undefined;
 ---
 
-<figure class="reel" data-reel>
-  {src && <video src={src} poster={poster} preload="none" playsinline aria-label={title}></video>}
+<figure class="reel" data-reel data-embed={embed} data-title={title}>
+  {file && <video src={file} poster={poster} preload="none" playsinline aria-label={title}></video>}
 
   <div class="reel__poster">
     <span class="reel__tag">{title}</span>
@@ -31,13 +43,22 @@ const t = useTranslations(lang);
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-reel]').forEach((reel) => {
-    const video = reel.querySelector('video');
     const play = reel.querySelector<HTMLButtonElement>('.reel__play');
-    if (!video || !play) return;
+    if (!play || play.disabled) return;
     play.addEventListener('click', () => {
+      const video = reel.querySelector('video');
+      if (reel.dataset.embed) {
+        const frame = document.createElement('iframe');
+        frame.src = reel.dataset.embed;
+        frame.title = reel.dataset.title ?? '';
+        frame.allow = 'autoplay; fullscreen; picture-in-picture';
+        frame.allowFullscreen = true;
+        reel.prepend(frame);
+      } else if (video) {
+        video.controls = true;
+        video.play();
+      }
       reel.classList.add('is-playing');
-      video.controls = true;
-      video.play();
     });
   });
 </script>
@@ -48,7 +69,7 @@ const t = useTranslations(lang);
     aspect-ratio: 16 / 9; border-radius: 18px;
     background: linear-gradient(140deg, #4fe0ff 0%, var(--motion-b) 45%, #0f1a3a 100%);
   }
-  video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  video, .reel :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
 
   .reel__poster { position: absolute; inset: 0; transition: opacity .4s var(--ease); }
   .reel.is-playing .reel__poster { opacity: 0; pointer-events: none; }

@@ -1,0 +1,49 @@
+---
+import { imageAttrs, type CmsImage } from '../lib/sanity';
+
+/**
+ * Project imagery: a responsive Sanity image (with blurred LQIP while loading),
+ * or the placeholder gradient when there's no image yet.
+ * `fill` makes it cover a box sized by the parent instead of keeping its own ratio.
+ */
+interface Props {
+  image?: CmsImage;
+  gradient?: [string, string];
+  aspect?: number;
+  alt?: string;
+  sizes?: string;
+  fill?: boolean;
+  eager?: boolean;
+  class?: string;
+}
+
+const { image, gradient = ['#eceae4', '#e6e5df'], aspect, alt, sizes = '100vw', fill = false, eager = false, class: className } = Astro.props;
+const img = imageAttrs(image);
+const ratio = fill ? undefined : (img?.aspect ?? aspect);
+const style = [
+  ratio ? `aspect-ratio:${ratio}` : '',
+  img?.lqip ? `background-image:url(${img.lqip})` : `background:linear-gradient(135deg, ${gradient[0]}, ${gradient[1]})`,
+].filter(Boolean).join(';');
+---
+
+<div class:list={['media', { 'media--fill': fill }, className]} style={style} role={img ? undefined : 'img'} aria-label={img ? undefined : alt}>
+  {img && (
+    <img
+      src={img.src}
+      srcset={img.srcset}
+      sizes={sizes}
+      width={img.width}
+      height={img.height}
+      alt={alt ?? img.alt}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      fetchpriority={eager ? 'high' : undefined}
+    />
+  )}
+</div>
+
+<style>
+  .media { position: relative; width: 100%; overflow: hidden; background-size: cover; background-position: center; }
+  .media--fill { height: 100%; }
+  img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+</style>

@@ -1,5 +1,7 @@
 ---
+import CoverMedia from './CoverMedia.astro';
 import type { Project } from '../data/projects';
+import { pageTitle } from '../data/caseStudies';
 import { getLang, localizePath, useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -20,13 +22,13 @@ const t = useTranslations(lang);
   data-aspect={p.aspect}
 >
   <div class="card__media">
-    <div class="card__cover" style={`aspect-ratio:${p.aspect};background:linear-gradient(135deg, ${p.cover[0]}, ${p.cover[1]})`}></div>
+    <CoverMedia class="card__cover" image={p.image} gradient={p.cover} aspect={p.aspect} alt={pageTitle(p, lang)} sizes="(min-width: 1100px) 285px, (min-width: 768px) 33vw, 50vw" />
   </div>
   <div class="card__meta">
-    <h3>{p.title}</h3>
+    <h3>{pageTitle(p, lang)}</h3>
     <span class="card__likes">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 10v11H3V10h4Zm0 0 4-8c1.7 0 3 1.3 3 3v4h5.5a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.1 21H7" /></svg>
-      {p.likes}<span class="visually-hidden"> {t('work.likes')}</span>
+      <span data-like-count={p.slug}>{p.likes}</span><span class="visually-hidden"> {t('work.likes')}</span>
     </span>
   </div>
 </a>
@@ -35,8 +37,8 @@ const t = useTranslations(lang);
   .card { display: block; break-inside: avoid; margin-bottom: 20px; }
   .card[hidden] { display: none; }
   .card__media { border-radius: 14px; overflow: hidden; background: #eceae4; }
-  .card__cover { width: 100%; transition: transform .6s var(--ease); }
-  .card:hover .card__cover { transform: scale(1.035); }
+  .card__media :global(.card__cover) { transition: transform .6s var(--ease); }
+  .card:hover :global(.card__cover) { transform: scale(1.035); }
 
   .card__meta { display: flex; align-items: baseline; gap: 8px; padding: 10px 2px 0; }
   .card__meta h3 { flex: 1; min-width: 0; font-size: 14px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

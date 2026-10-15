@@ -1,51 +1,70 @@
 ---
+import { PortableText } from 'astro-portabletext';
+import PtImage from './pt/PtImage.astro';
+import PtImageRow from './pt/PtImageRow.astro';
 import type { Block } from '../data/caseStudies';
 
 interface Props {
-  blocks: Block[];
+  /** placeholder content */
+  blocks?: Block[];
+  /** Portable Text from Sanity (wins over `blocks`) */
+  portable?: unknown[];
 }
 
-const { blocks } = Astro.props;
+const { blocks = [], portable } = Astro.props;
 /** split "**bold**" markers into text / strong runs */
 const runs = (text: string) => text.split(/\*\*(.+?)\*\*/g).map((t, i) => ({ t, strong: i % 2 === 1 }));
+const components = { type: { altImage: PtImage, imageRow: PtImageRow } };
 ---
 
 <div class="rich">
-  {blocks.map((b) => {
-    if (b.type === 'heading') return <h2>{b.text}</h2>;
-    if (b.type === 'paragraph') return <p>{runs(b.text).map((r) => (r.strong ? <strong>{r.t}</strong> : r.t))}</p>;
-    if (b.type === 'list') return <ul>{b.items.map((i) => <li>{runs(i).map((r) => (r.strong ? <strong>{r.t}</strong> : r.t))}</li>)}</ul>;
-    if (b.type === 'quote') return <blockquote>{b.text}</blockquote>;
-    return (
-      <div class:list={['rich__images', { 'is-pair': b.items.length > 1 }]}>
-        {b.items.map((img) => (
-          <div class="rich__img" role="img" aria-label={img.alt} style={`aspect-ratio:${img.aspect};background:linear-gradient(135deg, ${img.cover[0]}, ${img.cover[1]})`}></div>
-        ))}
-      </div>
-    );
-  })}
+  {portable?.length ? (
+    <PortableText value={portable as any} components={components} onMissingComponent={false} />
+  ) : (
+    blocks.map((b) => {
+      if (b.type === 'heading') return <h2>{b.text}</h2>;
+      if (b.type === 'paragraph') return <p>{runs(b.text).map((r) => (r.strong ? <strong>{r.t}</strong> : r.t))}</p>;
+      if (b.type === 'list') return <ul>{b.items.map((i) => <li>{runs(i).map((r) => (r.strong ? <strong>{r.t}</strong> : r.t))}</li>)}</ul>;
+      if (b.type === 'quote') return <blockquote>{b.text}</blockquote>;
+      return (
+        <div class="rich__images is-row" style={`--n:${b.items.length}`}>
+          {b.items.map((img) => (
+            <div class="rich__img" role="img" aria-label={img.alt} style={`aspect-ratio:${img.aspect};background:linear-gradient(135deg, ${img.cover[0]}, ${img.cover[1]})`}></div>
+          ))}
+        </div>
+      );
+    })
+  )}
 </div>
 
 <style>
+  /* :global because Portable Text renders its own elements outside this component's scope */
   .rich { color: var(--ink-2); }
-  h2 { color: var(--ink); font-size: 26px; font-weight: 300; letter-spacing: -.01em; line-height: 1.25; margin: 48px 0 14px; }
-  h2:first-child { margin-top: 0; }
-  p, ul { font-size: 17px; line-height: 1.65; margin-bottom: 16px; }
-  strong { color: var(--ink); font-weight: 500; }
-  ul { padding-left: 20px; }
-  li { margin-bottom: 4px; }
-  li::marker { color: var(--accent, var(--ink)); }
-  blockquote { margin: 32px 0; padding: 4px 0 4px 20px; border-left: 2px solid var(--ink); color: var(--ink); font-size: 22px; font-weight: 200; line-height: 1.35; }
+  .rich :global(h2), .rich :global(h3) { color: var(--ink); font-weight: 300; letter-spacing: -.01em; line-height: 1.25; }
+  .rich :global(h2) { font-size: 26px; margin: 48px 0 14px; }
+  .rich :global(h3) { font-size: 21px; margin: 36px 0 10px; }
+  .rich > :global(:first-child) { margin-top: 0; }
+  .rich :global(p), .rich :global(ul), .rich :global(ol) { font-size: 17px; line-height: 1.65; margin-bottom: 16px; }
+  .rich :global(strong) { color: var(--ink); font-weight: 500; }
+  .rich :global(a) { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  .rich :global(ul), .rich :global(ol) { padding-left: 20px; }
+  .rich :global(li) { margin-bottom: 4px; }
+  .rich :global(li::marker) { color: var(--accent, var(--ink)); }
+  .rich :global(blockquote) { margin: 32px 0; padding: 4px 0 4px 20px; border-left: 2px solid var(--ink); color: var(--ink); font-size: 22px; font-weight: 200; line-height: 1.35; }
 
-  .rich__images { display: grid; gap: 12px; margin: 40px 0; }
-  .rich__images.is-pair { grid-template-columns: 1fr 1fr; }
-  .rich__img { border-radius: 14px; }
+  .rich :global(.rich__single) { margin: 40px 0; border-radius: 14px; overflow: hidden; }
+  .rich :global(.rich__images) { display: grid; gap: 12px; margin: 40px 0; }
+  .rich :global(.rich__images.is-row) { grid-template-columns: repeat(var(--n, 2), 1fr); align-items: start; }
+  .rich :global(.rich__images > *) { border-radius: 14px; overflow: hidden; }
+  .rich :global(.rich__img) { border-radius: 14px; }
 
   @media (min-width: 768px) {
-    h2 { font-size: 32px; margin: 56px 0 16px; }
-    p, ul { font-size: 18px; line-height: 1.6; margin-bottom: 18px; }
-    blockquote { margin: 40px 0; padding-left: 24px; font-size: 26px; }
-    .rich__images { gap: 20px; margin: 64px 0; }
-    .rich__img { border-radius: 22px; }
+    .rich :global(h2) { font-size: 32px; margin: 56px 0 16px; }
+    .rich :global(h3) { font-size: 24px; }
+    .rich :global(p), .rich :global(ul), .rich :global(ol) { font-size: 18px; line-height: 1.6; margin-bottom: 18px; }
+    .rich :global(blockquote) { margin: 40px 0; padding-left: 24px; font-size: 26px; }
+    .rich :global(.rich__single) { margin: 64px 0; border-radius: 22px; }
+    .rich :global(.rich__images) { gap: 20px; margin: 64px 0; }
+    .rich :global(.rich__images > *), .rich :global(.rich__img) { border-radius: 22px; }
   }
 </style>
