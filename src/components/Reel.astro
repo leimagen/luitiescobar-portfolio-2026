@@ -1,0 +1,84 @@
+---
+import Lens from './Lens.astro';
+import { getLang, useTranslations } from '../i18n/utils';
+
+interface Props {
+  title: string;
+  /** video file URL (mp4/webm). Without it the reel shows its poster and a "coming soon" note. */
+  src?: string;
+  poster?: string;
+}
+
+const { title, src, poster } = Astro.props;
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+---
+
+<figure class="reel" data-reel>
+  {src && <video src={src} poster={poster} preload="none" playsinline aria-label={title}></video>}
+
+  <div class="reel__poster">
+    <span class="reel__tag">{title}</span>
+    <button class="reel__play" type="button" disabled={!src} aria-label={src ? `${t('reel.play')} — ${title}` : t('reel.soon')}>
+      <Lens class="reel__lens" />
+      <span class="reel__content">
+        <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><path d="M0 0L12 7L0 14Z" fill="currentColor" /></svg>
+        <span class="reel__label">{src ? t('reel.play') : t('reel.soon')}</span>
+      </span>
+    </button>
+  </div>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-reel]').forEach((reel) => {
+    const video = reel.querySelector('video');
+    const play = reel.querySelector<HTMLButtonElement>('.reel__play');
+    if (!video || !play) return;
+    play.addEventListener('click', () => {
+      reel.classList.add('is-playing');
+      video.controls = true;
+      video.play();
+    });
+  });
+</script>
+
+<style>
+  .reel {
+    position: relative; z-index: 1; overflow: hidden;
+    aspect-ratio: 16 / 9; border-radius: 18px;
+    background: linear-gradient(140deg, #4fe0ff 0%, var(--motion-b) 45%, #0f1a3a 100%);
+  }
+  video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  .reel__poster { position: absolute; inset: 0; transition: opacity .4s var(--ease); }
+  .reel.is-playing .reel__poster { opacity: 0; pointer-events: none; }
+
+  .reel__tag {
+    position: absolute; left: 14px; top: 12px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #fff;
+  }
+
+  .reel__play {
+    position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+    display: grid; place-items: center; width: 64px; aspect-ratio: 1; color: #fff;
+    transition: scale .4s var(--ease);
+  }
+  .reel__play:not(:disabled):hover { scale: 1.06; }
+  .reel__play:disabled { cursor: default; }
+  .reel__play :global(.reel__lens) { inset: 0; width: 100%; }
+  .reel__content { position: relative; display: flex; align-items: center; gap: 8px; translate: 2px 0; }
+  .reel__label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
+  }
+  /* mobile: icon only; "coming soon" caption sits under the lens */
+  .reel__play:not(:disabled) .reel__label { display: none; }
+  .reel__play:disabled .reel__label { position: absolute; left: 50%; top: calc(100% + 30px); translate: -50% 0; }
+
+  @media (min-width: 768px) {
+    .reel { border-radius: 28px; }
+    .reel__tag { left: 28px; top: 24px; font-size: 12px; }
+    .reel__play { width: 128px; }
+    .reel__play:not(:disabled) .reel__label { display: inline; font-size: 13px; letter-spacing: .3em; }
+    .reel__play:disabled .reel__label { top: calc(100% + 56px); font-size: 12px; }
+  }
+</style>

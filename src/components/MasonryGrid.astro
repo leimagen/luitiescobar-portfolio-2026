@@ -9,18 +9,63 @@ interface Props {
 const { projects } = Astro.props;
 ---
 
-<!-- Pinterest-style grid: CSS columns let each cover keep its own proportion -->
-<div class="masonry">
+<!--
+  Pinterest-style grid. Without JS it falls back to CSS columns (top-to-bottom order).
+  With JS, cards are dealt left-to-right into the shortest column, so reading order follows the sort.
+  Other scripts can change `grid.masonryItems` / card.hidden and dispatch "masonry:layout".
+-->
+<div class="masonry" data-masonry>
   {projects.map((p) => <ProjectCard project={p} />)}
 </div>
 
+<script>
+  type Grid = HTMLElement & { masonryItems?: HTMLElement[] };
+  const CAPTION = 0.14; // caption height relative to card width
+
+  function layout(grid: Grid) {
+    const cols = parseInt(getComputedStyle(grid).getPropertyValue('--cols')) || 1;
+    const items = (grid.masonryItems ??= [...grid.querySelectorAll<HTMLElement>('.card')]);
+    const columns = Array.from({ length: cols }, () => {
+      const col = document.createElement('div');
+      col.className = 'masonry__col';
+      return col;
+    });
+    const heights = new Array(cols).fill(0);
+    for (const card of items) {
+      if (card.hidden) continue;
+      const i = heights.indexOf(Math.min(...heights));
+      columns[i].appendChild(card);
+      heights[i] += 1 / Number(card.dataset.aspect || 1) + CAPTION;
+    }
+    // keep hidden cards in the DOM so filters can bring them back
+    items.filter((c) => c.hidden).forEach((c) => columns[0].appendChild(c));
+    grid.replaceChildren(...columns);
+    grid.classList.add('is-laid-out');
+  }
+
+  document.querySelectorAll<Grid>('[data-masonry]').forEach((grid) => {
+    let lastCols = '';
+    const relayout = () => layout(grid);
+    grid.addEventListener('masonry:layout', relayout);
+    new ResizeObserver(() => {
+      const cols = getComputedStyle(grid).getPropertyValue('--cols');
+      if (cols !== lastCols) {
+        lastCols = cols;
+        relayout();
+      }
+    }).observe(grid);
+  });
+</script>
+
 <style>
-  .masonry { columns: 2; column-gap: 13px; }
+  .masonry { --cols: 2; --gap: 13px; columns: var(--cols); column-gap: var(--gap); }
+  .masonry.is-laid-out { columns: auto; display: flex; align-items: flex-start; gap: var(--gap); }
+  .masonry :global(.masonry__col) { flex: 1; min-width: 0; }
 
   @media (min-width: 768px) {
-    .masonry { columns: 3; column-gap: 20px; }
+    .masonry { --cols: 3; --gap: 20px; }
   }
   @media (min-width: 1100px) {
-    .masonry { columns: 4; }
+    .masonry { --cols: 4; }
   }
 </style>

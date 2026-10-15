@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Blob from '../components/Blob.astro';
+import Reel from '../components/Reel.astro';
+import MasonryGrid from '../components/MasonryGrid.astro';
+import { disciplines, disciplineById, type Discipline } from '../data/disciplines';
+import { projectsFor } from '../data/projects';
+import { getLang, localizePath, useTranslations } from '../i18n/utils';
+
+interface Props {
+  discipline: Discipline;
+}
+
+const { discipline: d } = Astro.props;
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const items = projectsFor(d.id);
+const index = disciplines.indexOf(d);
+const pad = (n: number) => String(n).padStart(2, '0');
+const accent = disciplineById[d.accent];
+const others = disciplines.filter((o) => o.id !== d.id);
+// only offer filters that actually have projects
+const filters = d.subcategories.filter((s) => items.some((p) => p.subcategory === s.id));
+---
+
+<BaseLayout title={`${d.word[lang].join(' ')} — Luiti Escobar`} description={d.description[lang]} current={d.id}>
+  <section class="container sec-hero">
+    <div class="sec-head">
+      <div>
+        <p class="label">{pad(index + 1)}/{pad(disciplines.length)} — {t('section.label')}</p>
+        <p class="sec-head__small">{t('disciplines.thats')}</p>
+        <h1>{d.word[lang].map((w) => <span>{w}</span>)}</h1>
+      </div>
+      <p class="sec-head__desc">{d.description[lang]}</p>
+    </div>
+
+    <div class:list={['sec-media', { 'has-reel': !!d.reel }]}>
+      <Blob class="sec-blob-a" from={d.colors[0]} to={d.colors[1]} blur={50} opacity={0.7} />
+      <Blob class="sec-blob-b" from={accent.colors[0]} to={accent.colors[1]} blur={40} opacity={0.6} />
+      {d.reel && <Reel title={d.reel.title} src={d.reel.src} poster={d.reel.poster} />}
+    </div>
+  </section>
+
+  <section class="container work" data-gallery>
+    <div class="toolbar">
+      <div class="filters" role="group" aria-label={t('filters.label')}>
+        <button type="button" data-filter="all" aria-pressed="true">{t('filters.all')} <span class="count">{items.length}</span></button>
+        {filters.map((s) => (
+          <button type="button" data-filter={s.id} aria-pressed="false">{s.label[lang]}</button>
+        ))}
+      </div>
+      <button type="button" class="sort label" data-sort="recent" data-recent={t('sort.recent')} data-liked={t('sort.liked')}>
+        {t('sort.label')}: <span>{t('sort.recent')}</span> ↓
+      </button>
+    </div>
+
+    <MasonryGrid projects={items} />
+    <p class="empty" hidden>{t('work.empty')}</p>
+  </section>
+
+  <section class="container others">
+    <h2 class="visually-hidden">{t('section.others')}</h2>
+    <ul>
+      {others.map((o) => (
+        <li>
+          <a href={localizePath(`/${o.slug}`, lang)} style={`--c1:${o.colors[0]};--c2:${o.colors[1]}`}>
+            <span class="label">{pad(disciplines.indexOf(o) + 1)}/{pad(disciplines.length)}</span>
+            <strong>{o.word[lang].map((w) => <span>{w}</span>)}</strong>
+            <span class="others__go" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+    const grid = gallery.querySelector<HTMLElement & { masonryItems?: HTMLElement[] }>('[data-masonry]')!;
+    const cards = () => (grid.masonryItems ??= [...grid.querySelectorAll<HTMLElement>('.card')]);
+    const relayout = () => grid.dispatchEvent(new Event('masonry:layout'));
+    const empty = gallery.querySelector<HTMLElement>('.empty')!;
+    const buttons = [...gallery.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+
+    buttons.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        let visible = 0;
+        cards().forEach((c) => {
+          const show = filter === 'all' || c.dataset.sub === filter;
+          c.hidden = !show;
+          if (show) visible++;
+        });
+        empty.hidden = visible > 0;
+        relayout();
+      }),
+    );
+
+    const sort = gallery.querySelector<HTMLButtonElement>('[data-sort]')!;
+    sort.addEventListener('click', () => {
+      const next = sort.dataset.sort === 'recent' ? 'liked' : 'recent';
+      sort.dataset.sort = next;
+      sort.querySelector('span')!.textContent = sort.dataset[next] ?? '';
+      const key = (c: HTMLElement) => (next === 'liked' ? Number(c.dataset.likes) : Date.parse(c.dataset.date ?? ''));
+      grid.masonryItems = [...cards()].sort((a, b) => key(b) - key(a));
+      relayout();
+    });
+  });
+</script>
+
+<style>
+  /* ---------- header (Figma: Section Gallery — Mobile 375 / Desktop 1440) ---------- */
+  .sec-hero { padding-top: 32px; }
+  .sec-head { display: grid; gap: 16px; }
+  .sec-head .label { font-size: 11px; margin-bottom: 14px; }
+  .sec-head__small { font-size: 16px; color: var(--ink-2); }
+  h1 { display: flex; flex-direction: column; font-size: clamp(56px, 17vw, 120px); font-weight: 200; line-height: .92; letter-spacing: -.03em; text-transform: uppercase; }
+  .sec-head__desc { font-size: 15px; line-height: 1.55; color: var(--ink-2); max-width: 340px; }
+
+  .sec-media { position: relative; margin-top: 32px; }
+  .sec-media:not(.has-reel) { height: 0; margin: 0; }
+  .sec-media :global(.sec-blob-a) { width: 220px; height: 220px; left: -80px; top: -50px; }
+  .sec-media :global(.sec-blob-b) { width: 160px; height: 160px; left: 230px; top: 110px; }
+  /* without a reel the blobs decorate the header instead */
+  .sec-media:not(.has-reel) :global(.sec-blob-a) { left: auto; right: -60px; top: -330px; }
+  .sec-media:not(.has-reel) :global(.sec-blob-b) { left: auto; right: 120px; top: -170px; width: 110px; height: 110px; }
+
+  /* ---------- toolbar ---------- */
+  .work { margin-top: 48px; }
+  .toolbar { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+  .filters {
+    display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+    margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter);
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters button {
+    flex: none; padding: 11px 20px; border-radius: 99px; border: 1px solid var(--ink);
+    font-size: 15px; font-weight: 400; transition: background .25s, color .25s;
+  }
+  .filters button:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+  .filters button[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
+  .count { font-family: var(--mono); font-size: 11px; opacity: .7; margin-left: 2px; }
+  .sort { align-self: flex-end; letter-spacing: .3em; transition: color .2s; }
+  .sort:hover { color: var(--ink); }
+  .empty { padding: 60px 0; text-align: center; color: var(--muted); }
+
+  /* ---------- other disciplines ---------- */
+  .others { margin-top: 72px; }
+  .others ul { display: grid; gap: 12px; list-style: none; }
+  .others a {
+    position: relative; overflow: hidden; isolation: isolate;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
+    min-height: 150px; padding: 22px; border-radius: 22px;
+    border: 1px solid var(--line); background: var(--surface);
+    transition: transform .5s var(--ease);
+  }
+  .others a::before {
+    content: ""; position: absolute; z-index: -1; width: 180px; aspect-ratio: 1; right: -40px; top: -50px;
+    border-radius: 42% 58% 62% 38% / 45% 40% 60% 55%;
+    background: radial-gradient(circle at 35% 30%, var(--c1), var(--c2));
+    filter: blur(24px); opacity: 0; transition: opacity .5s var(--ease);
+  }
+  .others a:hover { transform: translateY(-3px); }
+  .others a:hover::before { opacity: .8; }
+  .others strong { display: flex; flex-direction: column; font-size: 34px; font-weight: 200; line-height: 1; letter-spacing: -.02em; text-transform: uppercase; }
+  .others__go { position: absolute; right: 22px; bottom: 22px; font-size: 18px; transition: translate .3s var(--ease); }
+  .others a:hover .others__go { translate: 4px 0; }
+
+  @media (min-width: 768px) {
+    .sec-head { grid-template-columns: 1fr auto; align-items: end; }
+    .sec-head .label { font-size: 12px; margin-bottom: 20px; }
+    .sec-head__small { font-size: 20px; }
+    .sec-head__desc { font-size: 16px; line-height: 1.6; }
+
+    .sec-media { margin-top: 54px; }
+    .sec-media :global(.sec-blob-a) { width: 420px; height: 420px; left: -107px; top: 260px; }
+    .sec-media :global(.sec-blob-b) { width: 597px; height: 597px; left: 60.2%; top: 164px; }
+    /* free band between the title and the description */
+    .sec-media:not(.has-reel) :global(.sec-blob-a) { width: 300px; height: 300px; left: 45%; right: auto; top: -390px; }
+    .sec-media:not(.has-reel) :global(.sec-blob-b) { width: 120px; height: 120px; left: 64%; right: auto; top: -170px; }
+
+    .work { margin-top: 96px; }
+    .toolbar { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .filters { margin: 0; padding: 0; flex-wrap: wrap; overflow: visible; }
+    .sort { align-self: auto; }
+
+    .others { margin-top: 120px; }
+    .others ul { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .others a { min-height: 180px; padding: 26px; }
+    .others__go { right: 26px; bottom: 26px; }
+  }
+
+  @media (min-width: 1024px) {
+    .sec-hero { padding-top: 0; }
+  }
+</style>

@@ -11,7 +11,14 @@ const lang = getLang(Astro.currentLocale);
 const t = useTranslations(lang);
 ---
 
-<a class="card" href={localizePath(`/work/${p.slug}`, lang)}>
+<a
+  class="card"
+  href={localizePath(`/work/${p.slug}`, lang)}
+  data-sub={p.subcategory}
+  data-date={p.date}
+  data-likes={p.likes}
+  data-aspect={p.aspect}
+>
   <div class="card__media">
     <div class="card__cover" style={`aspect-ratio:${p.aspect};background:linear-gradient(135deg, ${p.cover[0]}, ${p.cover[1]})`}></div>
   </div>
@@ -26,6 +33,7 @@ const t = useTranslations(lang);
 
 <style>
   .card { display: block; break-inside: avoid; margin-bottom: 20px; }
+  .card[hidden] { display: none; }
   .card__media { border-radius: 14px; overflow: hidden; background: #eceae4; }
   .card__cover { width: 100%; transition: transform .6s var(--ease); }
   .card:hover .card__cover { transform: scale(1.035); }

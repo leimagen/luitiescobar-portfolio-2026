@@ -1,0 +1,12 @@
+---
+import Section from '../views/Section.astro';
+import { disciplines } from '../data/disciplines';
+
+export function getStaticPaths() {
+  return disciplines.map((discipline) => ({ params: { section: discipline.slug }, props: { discipline } }));
+}
+
+const { discipline } = Astro.props;
+---
+
+<Section discipline={discipline} />

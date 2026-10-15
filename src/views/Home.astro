@@ -5,7 +5,7 @@ import IntroTeaser from '../components/IntroTeaser.astro';
 import Disciplines from '../components/Disciplines.astro';
 import MasonryGrid from '../components/MasonryGrid.astro';
 import ContactStrip from '../components/ContactStrip.astro';
-import { projects } from '../data/projects';
+import { selectedWork } from '../data/projects';
 import { getLang, localizePath, useTranslations } from '../i18n/utils';
 
 const lang = getLang(Astro.currentLocale);
@@ -22,7 +22,7 @@ const t = useTranslations(lang);
       <h2 class="section-title">{t('work.title')}</h2>
       <a class="arrow-link" href={localizePath('/work', lang)}>{t('work.all')} <span aria-hidden="true">→</span></a>
     </div>
-    <MasonryGrid projects={projects} />
+    <MasonryGrid projects={selectedWork} />
   </section>
 
   <ContactStrip />
