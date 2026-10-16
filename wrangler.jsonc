@@ -14,11 +14,11 @@
       "migrations_dir": "migrations"
     }
   ],
-  // Preview on *.workers.dev until the real content is in. To go live on the main domain
-  // (replaces the site currently served there), uncomment the routes below and redeploy.
-  "workers_dev": true
-  // "routes": [
-  //   { "pattern": "luitiescobar.com", "custom_domain": true },
-  //   { "pattern": "www.luitiescobar.com", "custom_domain": true }
-  // ]
+  // Live on the main domain since 2026-10-17 (replaced the old Cloudflare Pages site "luitiescobar").
+  // workers.dev stays on as a secondary preview URL.
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "luitiescobar.com", "custom_domain": true },
+    { "pattern": "www.luitiescobar.com", "custom_domain": true }
+  ]
 }

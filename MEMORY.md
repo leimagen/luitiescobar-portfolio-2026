@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-16 (AI Media #3 Sangre Real)
+Last update: 2026-10-17 (GO-LIVE on luitiescobar.com)
 
 ---
 
@@ -12,8 +12,9 @@ Multidisciplinary portfolio for Luiti Escobar (Valencia, Spain): Graphic Design,
 Bilingual EN (`/`) and ES (`/es/`), switchable in the header. Minimal light palette with blurred gradient
 blobs, glass "lens" circles and geometric patterns (zigzag, dot grid, line triangles).
 
-- Domain: `luitiescobar.com` (Cloudflare) — **still serves the previous site**; the new one is not on it yet.
-- New site (preview): https://luitiescobar.<account>.workers.dev (Worker `luitiescobar`)
+- **Live:** https://luitiescobar.com and https://www.luitiescobar.com (Worker `luitiescobar`, custom domains) since 2026-10-17.
+  Also on https://luitiescobar.<account>.workers.dev. The old site is still the Cloudflare Pages project
+  `luitiescobar` at https://luitiescobar.pages.dev (domain removed from it) — rollback only.
 - Studio (live): https://cms.luitiescobar.com (Worker `luitiescobar-cms`, Sanity login with GitHub)
 - Sanity: org `luitiescobar` (`oasl4bj9d`), project **`cp45bc1k`**, dataset `production` (public read).
   Login via the user's GitHub account. Manage at https://www.sanity.io/manage
@@ -49,7 +50,7 @@ studio/             Sanity Studio: schemaTypes/{objects,documents}, sanity.confi
 migrations/         D1 SQL migrations (0001_likes.sql)
 design/             first static HTML mockups (reference only)
 assets/             source files (profile-pic.psd — git-ignored)
-wrangler.jsonc      site Worker config (D1 binding, custom domains)
+wrangler.jsonc      site Worker config (D1 binding, custom domains luitiescobar.com + www)
 ```
 
 ## 4. Content model (Sanity)
@@ -85,11 +86,12 @@ Publishing in Sanity requires a **rebuild + deploy** of the site (webhook automa
 npm run dev                      # site dev server
 npm run build && npm run preview # production build, runs on workerd locally (API + D1 local)
 npx astro check                  # type-check
-npx wrangler deploy              # deploy site (after build) → workers.dev until routes are enabled
+npx wrangler deploy              # deploy site (after build) → luitiescobar.com, www and workers.dev
 cd studio && npm run dev         # Studio locally (needs studio/.env)
 cd studio && npm run deploy:cf   # build + deploy Studio to cms.luitiescobar.com
 cd studio && npx sanity exec scripts/seedSettings.ts --with-user-token   # create Site settings if missing
 cd studio && npx sanity exec scripts/snapshot.ts --with-user-token        # dump drafts → ../.cms-snapshot.json
+cd studio && npx sanity exec scripts/publishDrafts.ts --with-user-token   # publish every project draft at once
 CMS_SNAPSHOT=.cms-snapshot.json npm run build && npm run preview         # preview drafts locally (never deploy this build)
 ```
 
@@ -118,13 +120,14 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - [x] Sanity project `cp45bc1k` created, `.env` files written, CORS (localhost:3333, cms.luitiescobar.com),
       "Site settings" seeded from the code defaults (`studio/scripts/seedSettings.ts`, never overwrites)
 - [x] Studio deployed to cms.luitiescobar.com; site deployed to the workers.dev preview; likes verified in production
-- [ ] Switch `luitiescobar.com` to the new site: uncomment `routes` in `wrangler.jsonc`, build, deploy
-      (replaces the current site — only when the user says so, ideally after real content is in)
+- [x] **Go-live 2026-10-17** (user's go-ahead): all 38 drafts published (`studio/scripts/publishDrafts.ts`), routes enabled,
+      deployed to luitiescobar.com + www. Needed the user to remove the domain from the old Pages project first
+      (Cloudflare refuses custom domains whose DNS record is managed by Pages, error 100117).
 - [x] Legacy content imported as Sanity **drafts** (35 projects: 17 Graphic Design, 14 Motion, 4 3D) from Behance
       (behance.net/luiti2D, originals via CDN `source`) + previous site repo (github.com/leimagen/luitiescobar, Vimeo pieces).
       Curated list + bilingual copy: `studio/scripts/legacy/manifest.json`; importer `importLegacy.ts` (skips existing slugs).
       Dates for re-uploaded Vimeo pieces (2026-03-xx) are placeholders — user to confirm.
-- [ ] User reviews & publishes the drafts in the Studio, then rebuild + deploy the site
+- [x] Drafts published (user chose to publish all at once; can still edit in the Studio — each change needs rebuild + deploy)
 - Dropped by the user: Digicel "Multiplicamos x 10" / "Menos plástico" and Sheraton Bijao (videos only on Behance's player)
 - [x] AI Media #1 "From Illustration to AI Cinematic Shot" (draft): 4 Kling AI 3.0 Omni clips from the user's own
       illustrations (Ninja 2062, Fallen Angel, Stealther, Fantasy Mage), from the LinkedIn article
@@ -143,4 +146,5 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - [ ] Rebuild on publish (Sanity webhook → GitHub Action / Cloudflare build)
 - [ ] Contact form backend (Worker + email service)
 - [ ] Reel video URL for Motion Design
-- [ ] SEO polish: OG images, sitemap
+- [ ] SEO polish: OG images, sitemap, redirect www → apex (both serve the site today)
+- [ ] Confirm placeholder dates (2026-03-xx) of re-uploaded Vimeo pieces
