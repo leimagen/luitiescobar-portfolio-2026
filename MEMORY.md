@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-16 (AI Media #2 Telmedia)
+Last update: 2026-10-16 (AI Media #3 Sangre Real)
 
 ---
 
@@ -132,7 +132,12 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - [x] AI Media #2 "Telmedia Device — Generative AI short" (draft): 15s Kling AI short with audio from the user's Blender
       model (/media/ai/telmedia-device-short.mp4), reference frames + renders strip, from the LinkedIn article
       es.linkedin.com/pulse/telmedia-device-generative-ai-short-luiti-escobar-biqce. Script: studio/scripts/ai/telmediaShort.ts
-- [ ] AI Media #3 (user will send material)
+- [x] AI Media #3 "Nómada Sur — 'Sangre Real' AI teaser" (draft): 24s teaser with audio
+      (/media/ai/nomada-sur-sangre-real-teaser.mp4) for the user's band, from the LinkedIn post
+      urn:li:activity:7513900792102166528 (+ process in its comments). Script: studio/scripts/ai/sangreRealTeaser.ts — d1028ed.
+      **Privacy rule:** individual character sheets of band members are NEVER published (identity cloning risk);
+      only the band lineup reference (BANDA_lineup), element sheets and stills.
+- AI Media section complete (3 projects). User suggested going live on luitiescobar.com after this one.
 - [ ] 3D interior design project (next, user will send material)
 - [ ] New motion reel (old Vimeo 1178811549 was taken down over music licensing) — Motion Design shows "Reel coming soon" until then
 - [ ] Rebuild on publish (Sanity webhook → GitHub Action / Cloudflare build)
