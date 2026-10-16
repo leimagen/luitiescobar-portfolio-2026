@@ -1,11 +1,13 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
+import { notifyLike } from '../../lib/notify';
 
 // Runs on the Worker (everything else on the site is prerendered).
 export const prerender = false;
 
 const SLUG = /^[a-z0-9][a-z0-9-]{0,95}$/;
 const MAX_SLUGS = 120;
+const HOST = /^[a-z0-9.-]{3,100}$/;
 
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -41,12 +43,12 @@ export const GET: APIRoute = async ({ request, url }) => {
 };
 
 /** POST /api/likes { slug, liked } → { slug, count, liked } */
-export const POST: APIRoute = async ({ request, url }) => {
+export const POST: APIRoute = async ({ request, url, locals }) => {
   // only accept likes coming from the site itself
   const origin = request.headers.get('origin');
   if (origin && new URL(origin).host !== url.host) return json({ error: 'forbidden' }, 403);
 
-  let body: { slug?: unknown; liked?: unknown };
+  let body: { slug?: unknown; liked?: unknown; ref?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -60,7 +62,18 @@ export const POST: APIRoute = async ({ request, url }) => {
     ? env.DB.prepare('INSERT OR IGNORE INTO likes (slug, visitor, created_at) VALUES (?, ?, ?)').bind(slug, visitor, Date.now())
     : env.DB.prepare('DELETE FROM likes WHERE slug = ? AND visitor = ?').bind(slug, visitor);
   const count = env.DB.prepare('SELECT COUNT(*) AS n FROM likes WHERE slug = ?').bind(slug);
-  const [, result] = await env.DB.batch<{ n: number }>([write, count]);
+  const [written, result] = await env.DB.batch<{ n: number }>([write, count]);
+  const total = result.results[0]?.n ?? 0;
 
-  return json({ slug, count: result.results[0]?.n ?? 0, liked: body.liked });
+  // new like → Telegram message, sent after the response so the button stays instant
+  if (body.liked && written.meta.changes) {
+    const cf = (request as { cf?: { country?: string; city?: string } }).cf;
+    const ref = typeof body.ref === 'string' && HOST.test(body.ref) ? body.ref : undefined;
+    const task = notifyLike({ slug, visitor, count: total, country: cf?.country, city: cf?.city, userAgent: request.headers.get('user-agent') ?? '', ref, origin: url.origin })
+      .catch((e) => console.error('notify', e));
+    const ctx = (locals as { cfContext?: { waitUntil(p: Promise<unknown>): void } }).cfContext;
+    ctx ? ctx.waitUntil(task) : await task;
+  }
+
+  return json({ slug, count: total, liked: body.liked });
 };

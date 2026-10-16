@@ -1,8 +1,9 @@
-// Only the slice of the Workers runtime that /api/likes uses. The full generated
+// Only the slice of the Workers runtime that /api/likes (and src/lib/notify.ts) uses. The full generated
 // worker-configuration.d.ts is not loaded globally because it clashes with DOM types.
 declare module 'cloudflare:workers' {
   interface D1Result<T> {
     results: T[];
+    meta: { changes: number };
   }
   interface D1PreparedStatement {
     bind(...values: unknown[]): D1PreparedStatement;
@@ -15,6 +16,9 @@ declare module 'cloudflare:workers' {
     DB: D1Database;
     /** salt for the anonymous visitor hash (wrangler secret) */
     LIKES_SALT?: string;
+    /** Telegram like notifications (wrangler secrets, optional) */
+    TELEGRAM_BOT_TOKEN?: string;
+    TELEGRAM_CHAT_ID?: string;
   };
 }
 

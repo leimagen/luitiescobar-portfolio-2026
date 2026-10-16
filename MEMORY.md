@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-17 (cookie consent banner + cookie policy)
+Last update: 2026-10-17 (Telegram like notifications)
 
 ---
 
@@ -78,6 +78,12 @@ Publishing in Sanity requires a **rebuild + deploy** of the site (webhook automa
 - One like per visitor per project: salted SHA-256 of IP + user agent (no personal data stored).
 - Secret `LIKES_SALT` is set on the Worker (random; rotate with `npx wrangler secret put LIKES_SALT`).
 - D1 id `c9b2180e-c9e1-4c22-b3fd-65a4e78272a3` (region WEUR); table `likes` already created remotely.
+- **Telegram notification on every new like** (`src/lib/notify.ts`, called from the POST with `cfContext.waitUntil`):
+  project title (ES, fetched live from Sanity), total likes, approximate city/country (request.cf), device + browser
+  (user agent), external referrer host sent by the browser, link to the project. Once per visitor+project
+  (table `like_notifications`, migration 0002) and max 30/hour. Needs Worker secrets `TELEGRAM_BOT_TOKEN`
+  (@BotFather) and `TELEGRAM_CHAT_ID` (set by the user with `npx wrangler secret put`); without them it does nothing.
+  The cookie policy mentions this notification (nothing stored).
 - Local: `npx wrangler d1 migrations apply luitiescobar-likes --local`, then `npm run build && npm run preview`.
 
 ## 6. Commands

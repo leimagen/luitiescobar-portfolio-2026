@@ -16,12 +16,22 @@ export async function fetchLikes(slugs: string[]): Promise<LikesState | null> {
   }
 }
 
+/** host of the external page that sent the visitor here (e.g. "linkedin.com"), only for the like notification */
+function externalReferrer(): string | undefined {
+  try {
+    const ref = document.referrer ? new URL(document.referrer) : null;
+    return ref && ref.host !== location.host ? ref.hostname.replace(/^www\./, '') : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function sendLike(slug: string, liked: boolean): Promise<{ count: number; liked: boolean } | null> {
   try {
     const res = await fetch('/api/likes', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ slug, liked }),
+      body: JSON.stringify({ slug, liked, ref: liked ? externalReferrer() : undefined }),
     });
     if (!res.ok) return null;
     return (await res.json()) as { count: number; liked: boolean };
