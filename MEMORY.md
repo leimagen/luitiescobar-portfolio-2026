@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-17 (no em dashes, OG previews, Ninja 2062 short)
+Last update: 2026-10-17 (favicon, GA4 + SEO carried over from the old site)
 
 ---
 
@@ -116,6 +116,13 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - Share previews: BaseLayout emits Open Graph + Twitter tags. Default image `public/og-default(-es).jpg` (1200×630
   capture of the hero, made with headless Edge); project pages use their cover cropped to 1200×630 by Sanity
   (`ogImageUrl` in src/lib/sanity.ts). LinkedIn caches previews: refresh with https://www.linkedin.com/post-inspector/
+- Analytics/SEO (ported from the old site's index.html, github.com/leimagen/luitiescobar): Google Analytics 4
+  **G-J1EW2HGLJB** (`src/lib/seo.ts`, loaded only in production builds, no consent banner, same as before),
+  meta author/keywords, schema.org JSON-LD (Person + WebSite on every page, CreativeWork + VideoObject on projects),
+  hreflang incl. x-default, `/sitemap.xml` (src/pages/sitemap.xml.ts, EN+ES with alternates), `public/robots.txt`.
+  Search Console: submit https://luitiescobar.com/sitemap.xml there (not done by Claude; needs the user's Google login).
+- Favicon: "le" in Outfit (l 500 / e 300, from the logo font) light on an ink rounded tile: public/favicon.svg,
+  favicon.ico (16/32/48), apple-touch-icon.png (180).
 
 ## 8. Milestones
 
@@ -158,5 +165,6 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - [x] Ninja 2062 short (23s, several Kling AI shots edited, with audio) added to "From Illustration to AI Cinematic Shot":
       header video + cover frame, paragraph in the Ninja section, Fantasy Mage loop moved into the body.
       /media/ai/ninja-2062-short.mp4, script studio/scripts/ai/ninjaShort.ts
-- [ ] SEO polish: sitemap, redirect www → apex (both serve the site today)
+- [x] Favicon, GA4, JSON-LD, sitemap, robots.txt (2026-10-17)
+- [ ] Redirect www → apex (both serve the site today); cookie consent for GA4 (EU)
 - [ ] Confirm placeholder dates (2026-03-xx) of re-uploaded Vimeo pieces

@@ -8,6 +8,7 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { getLang, useTranslations } from '../i18n/utils';
+import { GA_ID, siteGraph } from '../lib/seo';
 
 interface Props {
   title?: string;
@@ -16,12 +17,18 @@ interface Props {
   /** absolute or site-relative share image (1200×630); defaults to the hero capture */
   image?: string;
   ogType?: 'website' | 'article';
+  /** extra schema.org nodes for this page (e.g. a CreativeWork) */
+  schema?: Record<string, unknown>[];
 }
 
 const lang = getLang(Astro.currentLocale);
 const t = useTranslations(lang);
 const { title = t('meta.title'), description = t('meta.description'), current, ogType = 'website' } = Astro.props;
 const pageUrl = new URL(Astro.url.pathname, Astro.site);
+const basePath = Astro.url.pathname.replace(/^\/es(?=\/|$)/, '') || '/';
+const enUrl = new URL(basePath, Astro.site);
+const esUrl = new URL('/es' + basePath, Astro.site);
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': [...siteGraph(lang), ...(Astro.props.schema ?? [])] });
 const shareImage = new URL(Astro.props.image ?? (lang === 'es' ? '/og-default-es.jpg' : '/og-default.jpg'), Astro.site);
 ---
 
@@ -30,9 +37,16 @@ const shareImage = new URL(Astro.props.image ?? (lang === 'es' ? '/og-default-es
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#fafaf7" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content="Luiti Escobar" />
+    <meta name="keywords" content={lang === 'es'
+      ? 'diseñador multidisciplinario, diseño gráfico, motion design, animación, AI media, IA generativa, 3D, branding, diseñador remoto, Valencia, Luiti Escobar'
+      : 'multidisciplinary designer, graphic design, motion designer, animation, AI media, generative AI, 3D, branding, remote designer, Valencia Spain, Luiti Escobar'} />
     <link rel="canonical" href={pageUrl} />
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="Luiti Escobar" />
@@ -44,9 +58,23 @@ const shareImage = new URL(Astro.props.image ?? (lang === 'es' ? '/og-default-es
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="alternate" hreflang="en" href={new URL(Astro.url.pathname.replace(/^\/es(?=\/|$)/, '') || '/', Astro.site)} />
-    <link rel="alternate" hreflang="es" href={new URL('/es' + (Astro.url.pathname.replace(/^\/es(?=\/|$)/, '') || '/'), Astro.site)} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="es" href={esUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <script type="application/ld+json" set:html={jsonLd} />
     <meta name="generator" content={Astro.generator} />
+    {import.meta.env.PROD && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+        <script is:inline define:vars={{ GA_ID }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', GA_ID);
+        </script>
+      </>
+    )}
   </head>
   <body>
     <Nav current={current} />

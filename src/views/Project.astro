@@ -40,10 +40,23 @@ const facts = [
 // motion pieces show their video on top; the cover stays the poster and the gallery thumbnail
 const video = p.source?.video;
 const poster = imageAttrs(p.image, 1920);
+const shareImg = ogImageUrl(p.image);
+const schema = [{
+  '@type': 'CreativeWork',
+  name: title,
+  description: cs.lead,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  image: shareImg,
+  dateCreated: p.date,
+  genre: d.word.en.join(' '),
+  inLanguage: lang,
+  creator: { '@id': 'https://luitiescobar.com/#person' },
+  ...(video ? { video: { '@type': 'VideoObject', name: title, description: cs.lead || title, thumbnailUrl: shareImg, uploadDate: p.date, contentUrl: new URL(video, Astro.site).href } } : {}),
+}];
 const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[1]})`;
 ---
 
-<BaseLayout title={`${title} | Luiti Escobar`} description={cs.lead} current={d.id} image={ogImageUrl(p.image)} ogType="article">
+<BaseLayout title={`${title} | Luiti Escobar`} description={cs.lead} current={d.id} image={shareImg} ogType="article" schema={schema}>
   <article class="project" style={`--accent:${d.colors[1]}`}>
     <header class="container p-head">
       <nav class="crumbs label" aria-label="Breadcrumb">
