@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Blob from '../components/Blob.astro';
 import RichBody from '../components/RichBody.astro';
 import CoverMedia from '../components/CoverMedia.astro';
+import Reel from '../components/Reel.astro';
+import { imageAttrs } from '../lib/sanity';
 import ProjectActions from '../components/ProjectActions.astro';
 import MasonryGrid from '../components/MasonryGrid.astro';
 import { disciplineById } from '../data/disciplines';
@@ -35,6 +37,9 @@ const facts = [
   [t('project.role'), cs.role],
   [t('project.tools'), cs.tools],
 ].filter(([, v]) => v);
+// motion pieces show their video on top; the cover stays the poster and the gallery thumbnail
+const video = p.source?.video;
+const poster = imageAttrs(p.image, 1920);
 const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[1]})`;
 ---
 
@@ -54,7 +59,11 @@ const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[
 
     <div class="container cover">
       <Blob class="cover__blob" from={d.colors[0]} to={d.colors[1]} blur={50} opacity={0.55} />
-      <CoverMedia class="cover__img" image={p.image} gradient={p.cover} aspect={16 / 9} alt={title} sizes="(min-width: 1264px) 1200px, 100vw" eager />
+      {video ? (
+        <Reel title={title} src={video} poster={poster?.src} aspect={poster && poster.aspect > 1.2 ? poster.aspect : 16 / 9} showTag={false} />
+      ) : (
+        <CoverMedia class="cover__img" image={p.image} gradient={p.cover} aspect={16 / 9} alt={title} sizes="(min-width: 1264px) 1200px, 100vw" eager />
+      )}
     </div>
 
     <div class="container p-body">

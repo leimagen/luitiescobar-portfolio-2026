@@ -6,10 +6,15 @@ interface Props {
   title: string;
   /** Vimeo / YouTube link or a direct video file. Without it the reel shows a "coming soon" note. */
   src?: string;
+  /** image shown before playing (and as the <video> poster) */
   poster?: string;
+  /** width / height; defaults to 16:9 */
+  aspect?: number;
+  /** small title label in the corner */
+  showTag?: boolean;
 }
 
-const { title, src, poster } = Astro.props;
+const { title, src, poster, aspect, showTag = true } = Astro.props;
 const lang = getLang(Astro.currentLocale);
 const t = useTranslations(lang);
 
@@ -18,19 +23,29 @@ function embedUrl(url?: string) {
   if (!url) return undefined;
   const yt = url.match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/)([\w-]{11})/);
   if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}?autoplay=1&rel=0&modestbranding=1`;
-  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=1&dnt=1&title=0&byline=0&portrait=0`;
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([0-9a-f]{6,}))?/);
+  if (vimeo) {
+    // unlisted videos carry a privacy hash: vimeo.com/ID/HASH or ?h=HASH
+    const hash = vimeo[2] ?? url.match(/[?&]h=([0-9a-f]+)/)?.[1];
+    return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=1&dnt=1&title=0&byline=0&portrait=0${hash ? `&h=${hash}` : ''}`;
+  }
   return undefined;
 }
 const embed = embedUrl(src);
 const file = src && !embed ? src : undefined;
 ---
 
-<figure class="reel" data-reel data-embed={embed} data-title={title}>
+<figure
+  class:list={['reel', { 'has-poster': poster }]}
+  data-reel
+  data-embed={embed}
+  data-title={title}
+  style={[aspect ? `aspect-ratio:${aspect}` : '', poster ? `background-image:url(${poster})` : ''].filter(Boolean).join(';')}
+>
   {file && <video src={file} poster={poster} preload="none" playsinline aria-label={title}></video>}
 
   <div class="reel__poster">
-    <span class="reel__tag">{title}</span>
+    {showTag && <span class="reel__tag">{title}</span>}
     <button class="reel__play" type="button" disabled={!src} aria-label={src ? `${t('reel.play')} — ${title}` : t('reel.soon')}>
       <Lens class="reel__lens" />
       <span class="reel__content">
@@ -69,6 +84,8 @@ const file = src && !embed ? src : undefined;
     aspect-ratio: 16 / 9; border-radius: 18px;
     background: linear-gradient(140deg, #4fe0ff 0%, var(--motion-b) 45%, #0f1a3a 100%);
   }
+  .reel.has-poster { background-size: cover; background-position: center; }
+  .reel.has-poster .reel__poster { background: linear-gradient(transparent 55%, rgb(0 0 0 / .25)); }
   video, .reel :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
 
   .reel__poster { position: absolute; inset: 0; transition: opacity .4s var(--ease); }

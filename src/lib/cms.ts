@@ -1,4 +1,6 @@
+import { readFileSync } from 'node:fs';
 import { sanity, type CmsImage } from './sanity';
+import { CMS_QUERY } from './cmsQuery';
 
 /**
  * Everything the site reads from Sanity, fetched once per build (top-level await).
@@ -20,6 +22,7 @@ export interface CmsProject {
   tools?: string;
   lead?: L;
   cover: CmsImage;
+  video?: string;
   body?: L<unknown[]>;
   gallery?: CmsImage[];
 }
@@ -45,23 +48,16 @@ export interface CmsSettings {
   metaTitle?: L; metaDescription?: L;
 }
 
-const IMG = `{ ..., "dims": asset->metadata.dimensions, "lqip": asset->metadata.lqip }`;
-const BODY = `[]{ ..., _type == "altImage" => ${IMG}, _type == "imageRow" => { ..., images[]${IMG} } }`;
+type CmsData = { settings: CmsSettings | null; projects: CmsProject[] };
 
-const QUERY = `{
-  "settings": *[_id == "siteSettings"][0],
-  "projects": *[_type == "project" && defined(slug.current) && defined(coverImage.asset)] | order(date desc) {
-    "slug": slug.current, title, discipline, subcategory, date, featured, selected,
-    client, year, role, tools, lead,
-    "cover": coverImage${IMG},
-    "body": { "en": body.en${BODY}, "es": body.es${BODY} },
-    "gallery": gallery[]${IMG}
-  }
-}`;
+// CMS_SNAPSHOT=path/to.json builds from a local dump instead (e.g. drafts, via studio/scripts/snapshot.ts)
+const snapshot = import.meta.env.CMS_SNAPSHOT as string | undefined;
 
-export const cms: { settings: CmsSettings | null; projects: CmsProject[] } | null = sanity
-  ? await sanity.fetch(QUERY)
-  : null;
+export const cms: CmsData | null = snapshot
+  ? (JSON.parse(readFileSync(snapshot, 'utf8')) as CmsData)
+  : sanity
+    ? await sanity.fetch(CMS_QUERY)
+    : null;
 
 /** Pick the requested language, falling back to English. */
 export const pick = <T>(v: L<T> | undefined, lang: 'en' | 'es'): T | undefined => v?.[lang] ?? v?.en;

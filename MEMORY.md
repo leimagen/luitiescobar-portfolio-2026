@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-16
+Last update: 2026-10-16 (legacy content import)
 
 ---
 
@@ -60,7 +60,8 @@ wrangler.jsonc      site Worker config (D1 binding, custom domains)
 - **siteSettings** (singleton): Home copy (hero, bio paragraphs), About (role, lead, experience list,
   tools, training, languages), Contact (email, location, availability, titles, socials), per-discipline
   description/tags/reel URL, SEO defaults. Empty fields fall back to the defaults in code.
-- Reel video: Vimeo/YouTube link or external mp4 — **never upload video files to Sanity** (bandwidth cost).
+- Reel / project video: Vimeo/YouTube link (unlisted `vimeo.com/ID/HASH` supported) or external mp4 —
+  **never upload video files to Sanity** (bandwidth cost). Projects have a `video` field shown on top of the case study.
 
 How the site uses it: `src/lib/cms.ts` fetches everything once per build. If `PUBLIC_SANITY_PROJECT_ID`
 is unset, or no project is published yet, the placeholder data in `src/data/` is used.
@@ -84,6 +85,8 @@ npx wrangler deploy              # deploy site (after build) → workers.dev unt
 cd studio && npm run dev         # Studio locally (needs studio/.env)
 cd studio && npm run deploy:cf   # build + deploy Studio to cms.luitiescobar.com
 cd studio && npx sanity exec scripts/seedSettings.ts --with-user-token   # create Site settings if missing
+cd studio && npx sanity exec scripts/snapshot.ts --with-user-token        # dump drafts → ../.cms-snapshot.json
+CMS_SNAPSHOT=.cms-snapshot.json npm run build && npm run preview         # preview drafts locally (never deploy this build)
 ```
 
 Env (git-ignored, copies in `.env.example`): root `.env` → `PUBLIC_SANITY_PROJECT_ID=cp45bc1k`,
@@ -113,7 +116,16 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - [x] Studio deployed to cms.luitiescobar.com; site deployed to the workers.dev preview; likes verified in production
 - [ ] Switch `luitiescobar.com` to the new site: uncomment `routes` in `wrangler.jsonc`, build, deploy
       (replaces the current site — only when the user says so, ideally after real content is in)
-- [ ] Migrate real content into Sanity (projects, covers, case studies)
+- [x] Legacy content imported as Sanity **drafts** (35 projects: 17 Graphic Design, 14 Motion, 4 3D) from Behance
+      (behance.net/luiti2D, originals via CDN `source`) + previous site repo (github.com/leimagen/luitiescobar, Vimeo pieces).
+      Curated list + bilingual copy: `studio/scripts/legacy/manifest.json`; importer `importLegacy.ts` (skips existing slugs).
+      Dates for re-uploaded Vimeo pieces (2026-03-xx) are placeholders — user to confirm.
+- [ ] User reviews & publishes the drafts in the Studio, then rebuild + deploy the site
+- [ ] Videos still missing (hosted on Behance's own player): Digicel "Multiplicamos x 10" campaign + TV ad,
+      Digicel "Menos plástico", Sheraton Bijao 10th anniversary — need original files or Vimeo links
+- [ ] AI Media: 3–4 new projects (currently only on LinkedIn, informal copy) — user sends files; videos to be self-hosted
+      (proposal: Cloudflare R2 bucket on media.luitiescobar.com), copy rewritten EN/ES
+- [ ] New motion reel (old Vimeo 1178811549 was taken down over music licensing) — Motion Design shows "Reel coming soon" until then
 - [ ] Rebuild on publish (Sanity webhook → GitHub Action / Cloudflare build)
 - [ ] Contact form backend (Worker + email service)
 - [ ] Reel video URL for Motion Design

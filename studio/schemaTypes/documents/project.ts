@@ -36,6 +36,13 @@ export const project = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'video',
+      title: 'Video URL',
+      type: 'url',
+      group: 'main',
+      description: 'Vimeo or YouTube link, or a direct .mp4 hosted outside Sanity. Shown at the top of the project page; the cover stays in the galleries.',
+    }),
+    defineField({
       name: 'discipline',
       type: 'string',
       group: 'main',
