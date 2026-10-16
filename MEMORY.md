@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-17 (GO-LIVE on luitiescobar.com)
+Last update: 2026-10-17 (no em dashes, OG previews, Ninja 2062 short)
 
 ---
 
@@ -108,6 +108,14 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - Masonry deals cards left-to-right into the shortest column (CSS columns as no-JS fallback).
 - Appreciate block (Behance-style) was removed by the user; only the like button remains.
 - Contact form opens a pre-filled email (mailto) until a real form backend exists.
+- **No em dashes ("—") in any user-facing text** (user: it reads as AI-written). Prose uses commas/colons/periods/
+  parentheses; project titles use " - " ("Samsung - Galaxy Watch4 ..."); page titles end in " | Luiti Escobar".
+  All Sanity content, code defaults, manifest and scripts were cleaned on 2026-10-17. Check new content for it.
+- **Always `rm -rf dist` before `astro build`** for a deploy: the Cloudflare adapter does not clean `dist/client`,
+  and stale placeholder pages (aero-chair, …) got deployed once. Stop the local preview first (it locks dist/).
+- Share previews: BaseLayout emits Open Graph + Twitter tags. Default image `public/og-default(-es).jpg` (1200×630
+  capture of the hero, made with headless Edge); project pages use their cover cropped to 1200×630 by Sanity
+  (`ogImageUrl` in src/lib/sanity.ts). LinkedIn caches previews: refresh with https://www.linkedin.com/post-inspector/
 
 ## 8. Milestones
 
@@ -146,5 +154,9 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - [ ] Rebuild on publish (Sanity webhook → GitHub Action / Cloudflare build)
 - [ ] Contact form backend (Worker + email service)
 - [ ] Reel video URL for Motion Design
-- [ ] SEO polish: OG images, sitemap, redirect www → apex (both serve the site today)
+- [x] Open Graph / Twitter share tags + images (2026-10-17)
+- [x] Ninja 2062 short (23s, several Kling AI shots edited, with audio) added to "From Illustration to AI Cinematic Shot":
+      header video + cover frame, paragraph in the Ninja section, Fantasy Mage loop moved into the body.
+      /media/ai/ninja-2062-short.mp4, script studio/scripts/ai/ninjaShort.ts
+- [ ] SEO polish: sitemap, redirect www → apex (both serve the site today)
 - [ ] Confirm placeholder dates (2026-03-xx) of re-uploaded Vimeo pieces

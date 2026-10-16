@@ -1,5 +1,5 @@
 /**
- * Creates the AI Media project "Nómada Sur — 'Sangre Real' AI teaser" as a DRAFT.
+ * Creates the AI Media project "Nómada Sur - 'Sangre Real' AI teaser" as a DRAFT.
  * The teaser (with audio) is served by the site from /public/media/ai; images come from scripts/ai/.cache.
  * Individual character sheets stay private by design; only the band lineup reference is published.
  * Skips if the slug already exists.
@@ -18,7 +18,7 @@ const key = () => randomUUID().replace(/-/g, '').slice(0, 12);
 
 const exists = await client.fetch(`count(*[_type == "project" && slug.current == $slug])`, { slug: SLUG }, { perspective: 'raw' });
 if (exists) {
-  console.log('Project already exists — nothing to do.');
+  console.log('Project already exists - nothing to do.');
   process.exit(0);
 }
 
@@ -27,7 +27,7 @@ async function image(file: string, alt: string) {
   return { _type: 'altImage', alt, asset: { _type: 'reference', _ref: asset._id } };
 }
 
-const cover = await image('sangre-band-fisheye.webp', 'Nómada Sur — digital versions of the four members, fisheye shot in a scrapyard');
+const cover = await image('sangre-band-fisheye.webp', 'Nómada Sur: digital versions of the four members, fisheye shot in a scrapyard');
 const stage = await image('sangre-band-stage.webp', 'Nómada Sur performing on a flooded red stage under neon lightning bolts');
 const lineup = await image('sangre-band-lineup.webp', 'Lineup reference of the four Nómada Sur members, showing their height differences');
 const location = await image('sangre-location-sheet.webp', 'Location sheet: stage with neon lightning bolts, drums and amps on a reflective red floor');
@@ -46,14 +46,14 @@ const row = (imgs: object[]) => ({ _type: 'imageRow', _key: key(), images: imgs.
 
 const en = [
   h2('The idea'),
-  p('My band Nómada Sur hasn\'t played together in years. This time we "shot" a video with ', ['no cameras, no set'], ' — and with me an ocean away. It\'s the teaser for our upcoming single, published on our social channels, and it turned into a huge learning experience in multimedia generation.'),
+  p('My band Nómada Sur hasn\'t played together in years. This time we "shot" a video with ', ['no cameras, no set'], ', and with me an ocean away. It\'s the teaser for our upcoming single, published on our social channels, and it turned into a huge learning experience in multimedia generation.'),
   h2('Building the cast'),
-  p('The actors are digital versions of the four of us. After asking the members for their consent to use their image, I gave ChatGPT visual references of each one, together with the visual style direction and specific instructions, and generated a ', ['character sheet'], ' for every member — plus element sheets for each instrument, each prop and each location.'),
-  p('The individual character sheets stay private — publishing them would make it too easy to clone our identities. They made it possible to build this lineup reference of the whole band, where even the height differences are visible, which kept every clip coherent.'),
+  p('The actors are digital versions of the four of us. After asking the members for their consent to use their image, I gave ChatGPT visual references of each one, together with the visual style direction and specific instructions, and generated a ', ['character sheet'], ' for every member, plus element sheets for each instrument, each prop and each location.'),
+  p('The individual character sheets stay private, because publishing them would make it too easy to clone our identities. They made it possible to build this lineup reference of the whole band, where even the height differences are visible, which kept every clip coherent.'),
   single(lineup),
   row([location, guitar, car]),
   h2('Directing and editing with AI'),
-  p('With those elements I generated several video tests in Seedance 2.5 (Dreamina) and Kling AI, assisted by ', ['Claude Code as my technical director'], ': scripts, camera angles and prompt support. Then I fed the clips back to Claude Code, which — using Python, ffmpeg and editing skills — assembled the teaser in sync with the audio track, ready to publish.'),
+  p('With those elements I generated several video tests in Seedance 2.5 (Dreamina) and Kling AI, assisted by ', ['Claude Code as my technical director'], ': scripts, camera angles and prompt support. Then I fed the clips back to Claude Code, which used Python, ffmpeg and editing skills to assemble the teaser in sync with the audio track, ready to publish.'),
   single(stage),
   h2('Key learnings'),
   li(['Lock the faces before animating anything.'], ' Character sheets first, video second.'),
@@ -65,14 +65,14 @@ const en = [
 
 const es = [
   h2('La idea'),
-  p('Mi banda Nómada Sur lleva años sin tocar junta. Esta vez "grabamos" un video ', ['sin cámaras, sin set'], ' — y conmigo a un océano de distancia. Es el teaser de nuestro próximo single, publicado en nuestras redes, y se convirtió en un aprendizaje gigante sobre generación de contenido multimedia.'),
+  p('Mi banda Nómada Sur lleva años sin tocar junta. Esta vez "grabamos" un video ', ['sin cámaras, sin set'], ', y conmigo a un océano de distancia. Es el teaser de nuestro próximo single, publicado en nuestras redes, y se convirtió en un aprendizaje gigante sobre generación de contenido multimedia.'),
   h2('Construir el elenco'),
-  p('Los actores son versiones digitales de nosotros cuatro. Después de pedir consentimiento a los integrantes para usar su imagen, le di a ChatGPT referencias visuales de cada uno, junto con la dirección de estilo visual e instrucciones específicas, y generé un ', ['character sheet'], ' de cada integrante — además de hojas de elementos para cada instrumento, cada prop y cada locación.'),
-  p('Los character sheets individuales se mantienen privados — publicarlos facilitaría clonar nuestras identidades. Gracias a ellos pude crear esta referencia de la banda completa, donde ya se ven incluso las diferencias de estatura, lo que mantuvo la coherencia entre piezas.'),
+  p('Los actores son versiones digitales de nosotros cuatro. Después de pedir consentimiento a los integrantes para usar su imagen, le di a ChatGPT referencias visuales de cada uno, junto con la dirección de estilo visual e instrucciones específicas, y generé un ', ['character sheet'], ' de cada integrante, además de hojas de elementos para cada instrumento, cada prop y cada locación.'),
+  p('Los character sheets individuales se mantienen privados, porque publicarlos facilitaría clonar nuestras identidades. Gracias a ellos pude crear esta referencia de la banda completa, donde ya se ven incluso las diferencias de estatura, lo que mantuvo la coherencia entre piezas.'),
   single(lineup),
   row([location, guitar, car]),
   h2('Dirigir y editar con IA'),
-  p('Con esos elementos generé varias pruebas de video en Seedance 2.5 (Dreamina) y Kling AI, asistido por ', ['Claude Code como director técnico'], ': guiones, ángulos de cámara y apoyo con los prompts. Luego le pasé los clips a Claude Code, que — con Python, ffmpeg y skills de edición — montó el teaser en sincronía con el track de audio, listo para publicar.'),
+  p('Con esos elementos generé varias pruebas de video en Seedance 2.5 (Dreamina) y Kling AI, asistido por ', ['Claude Code como director técnico'], ': guiones, ángulos de cámara y apoyo con los prompts. Luego le pasé los clips a Claude Code, que con Python, ffmpeg y skills de edición montó el teaser en sincronía con el track de audio, listo para publicar.'),
   single(stage),
   h2('Aprendizajes clave'),
   li(['Fijar las caras antes de animar nada.'], ' Primero las hojas de personaje, después el video.'),
@@ -85,7 +85,7 @@ const es = [
 await client.create({
   _id: `drafts.${randomUUID()}`,
   _type: 'project',
-  title: { _type: 'localeString', en: 'Nómada Sur — "Sangre Real" AI teaser', es: 'Nómada Sur — Teaser con IA de "Sangre Real"' },
+  title: { _type: 'localeString', en: 'Nómada Sur - "Sangre Real" AI teaser', es: 'Nómada Sur - Teaser con IA de "Sangre Real"' },
   slug: { _type: 'slug', current: SLUG },
   coverImage: cover,
   video: '/media/ai/nomada-sur-sangre-real-teaser.mp4',
@@ -100,8 +100,8 @@ await client.create({
   tools: 'ChatGPT, Seedance 2.5 (Dreamina), Kling AI, Claude Code, Python, ffmpeg',
   lead: {
     _type: 'localeText',
-    en: 'A 24-second teaser for my band Nómada Sur\'s upcoming single — no cameras, no set, and me an ocean away: digital versions of the four of us, generated and directed with AI.',
-    es: 'Un teaser de 24 segundos para el próximo single de mi banda Nómada Sur — sin cámaras, sin set y conmigo a un océano de distancia: versiones digitales de nosotros cuatro, generadas y dirigidas con IA.',
+    en: 'A 24-second teaser for my band Nómada Sur\'s upcoming single. No cameras, no set and me an ocean away, just digital versions of the four of us, generated and directed with AI.',
+    es: 'Un teaser de 24 segundos para el próximo single de mi banda Nómada Sur. Sin cámaras, sin set y conmigo a un océano de distancia, solo versiones digitales de nosotros cuatro, generadas y dirigidas con IA.',
   },
   body: { _type: 'localeBlockContent', en, es },
 });

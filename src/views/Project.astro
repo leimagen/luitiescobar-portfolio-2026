@@ -4,7 +4,7 @@ import Blob from '../components/Blob.astro';
 import RichBody from '../components/RichBody.astro';
 import CoverMedia from '../components/CoverMedia.astro';
 import Reel from '../components/Reel.astro';
-import { imageAttrs } from '../lib/sanity';
+import { imageAttrs, ogImageUrl } from '../lib/sanity';
 import ProjectActions from '../components/ProjectActions.astro';
 import MasonryGrid from '../components/MasonryGrid.astro';
 import { disciplineById } from '../data/disciplines';
@@ -43,7 +43,7 @@ const poster = imageAttrs(p.image, 1920);
 const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[1]})`;
 ---
 
-<BaseLayout title={`${title} — Luiti Escobar`} description={cs.lead} current={d.id}>
+<BaseLayout title={`${title} | Luiti Escobar`} description={cs.lead} current={d.id} image={ogImageUrl(p.image)} ogType="article">
   <article class="project" style={`--accent:${d.colors[1]}`}>
     <header class="container p-head">
       <nav class="crumbs label" aria-label="Breadcrumb">

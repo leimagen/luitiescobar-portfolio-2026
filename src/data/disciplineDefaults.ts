@@ -37,8 +37,8 @@ export const disciplineDefaults: Discipline[] = [
     word: { en: ['Graphic', 'Design'], es: ['Diseño', 'Gráfico'] },
     tags: l('Branding · Ads · Web'),
     description: l(
-      'Branding, digital marketing, ads and web design — visual systems built to stay consistent across every format.',
-      'Branding, marketing digital, ads y diseño web — sistemas visuales pensados para mantenerse consistentes en cualquier formato.',
+      'Branding, digital marketing, ads and web design: visual systems built to stay consistent across every format.',
+      'Branding, marketing digital, ads y diseño web: sistemas visuales pensados para mantenerse consistentes en cualquier formato.',
     ),
     subcategories: [
       { id: 'branding', label: l('Branding') },
@@ -56,8 +56,8 @@ export const disciplineDefaults: Discipline[] = [
     word: { en: ['Motion', 'Design'], es: ['Motion', 'Design'] },
     tags: l('2D · 2.5D · 3D'),
     description: l(
-      '2D, 2.5D and 3D animation — logo reveals, explainers, kinetic type and loops that give brands a pulse.',
-      'Animación 2D, 2.5D y 3D — logo reveals, explainers, tipografía cinética y loops que le dan pulso a las marcas.',
+      '2D, 2.5D and 3D animation: logo reveals, explainers, kinetic type and loops that give brands a pulse.',
+      'Animación 2D, 2.5D y 3D: logo reveals, explainers, tipografía cinética y loops que le dan pulso a las marcas.',
     ),
     subcategories: [
       { id: '2d', label: l('2D') },

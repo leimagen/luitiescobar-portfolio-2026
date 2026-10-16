@@ -122,6 +122,6 @@ export function getCaseStudy(p: Project, lang: Lang): CaseStudy {
 
 /** Localized display title (the CMS will store both; placeholders reuse the English one). */
 const titles: Record<string, Record<Lang, string>> = {
-  'paper-cut-25d': { en: 'Paper Cut — a 2.5D story about slow mornings', es: 'Paper Cut — una historia 2.5D sobre mañanas lentas' },
+  'paper-cut-25d': { en: 'Paper Cut - a 2.5D story about slow mornings', es: 'Paper Cut - una historia 2.5D sobre mañanas lentas' },
 };
 export const pageTitle = (p: Project, lang: Lang) => p.titles?.[lang] || titles[p.slug]?.[lang] || p.title;

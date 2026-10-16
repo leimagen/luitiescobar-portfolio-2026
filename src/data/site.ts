@@ -37,9 +37,9 @@ export const certifications = st?.certifications?.length
 
 export const languages = st?.languages?.length ? st.languages.map((l) => ({ name: both(l.name), level: both(l.level) })) : defaultLanguages;
 
-/** "Nov 2021 — Jan 2026" / "nov 2021 — ene 2026" */
+/** "Nov 2021 - Jan 2026" / "nov 2021 - ene 2026" */
 export function formatPeriod(e: ExperienceItem, lang: Lang) {
   const fmt = new Intl.DateTimeFormat(lang, { month: 'short', year: 'numeric', timeZone: 'UTC' });
   const d = (ym: string) => fmt.format(new Date(`${ym}-01T00:00:00Z`)).replace('.', '');
-  return `${d(e.start)} — ${e.end ? d(e.end) : lang === 'es' ? 'Actualidad' : 'Present'}`;
+  return `${d(e.start)} - ${e.end ? d(e.end) : lang === 'es' ? 'Actualidad' : 'Present'}`;
 }

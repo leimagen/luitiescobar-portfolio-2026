@@ -13,11 +13,16 @@ interface Props {
   title?: string;
   description?: string;
   current?: string;
+  /** absolute or site-relative share image (1200×630); defaults to the hero capture */
+  image?: string;
+  ogType?: 'website' | 'article';
 }
 
 const lang = getLang(Astro.currentLocale);
 const t = useTranslations(lang);
-const { title = t('meta.title'), description = t('meta.description'), current } = Astro.props;
+const { title = t('meta.title'), description = t('meta.description'), current, ogType = 'website' } = Astro.props;
+const pageUrl = new URL(Astro.url.pathname, Astro.site);
+const shareImage = new URL(Astro.props.image ?? (lang === 'es' ? '/og-default-es.jpg' : '/og-default.jpg'), Astro.site);
 ---
 
 <!doctype html>
@@ -28,7 +33,17 @@ const { title = t('meta.title'), description = t('meta.description'), current } 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="canonical" href={pageUrl} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Luiti Escobar" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="alternate" hreflang="en" href={new URL(Astro.url.pathname.replace(/^\/es(?=\/|$)/, '') || '/', Astro.site)} />
     <link rel="alternate" hreflang="es" href={new URL('/es' + (Astro.url.pathname.replace(/^\/es(?=\/|$)/, '') || '/'), Astro.site)} />
     <meta name="generator" content={Astro.generator} />

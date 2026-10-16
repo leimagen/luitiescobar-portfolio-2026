@@ -57,3 +57,9 @@ export function imageAttrs(img: CmsImage | undefined, maxWidth = 2400): ImageAtt
     lqip: img.lqip,
   };
 }
+
+/** 1200×630 JPEG crop for Open Graph / LinkedIn previews (respects the image hotspot). */
+export function ogImageUrl(img: CmsImage | undefined): string | undefined {
+  if (!builder || !img?.asset) return undefined;
+  return builder.image(img).width(1200).height(630).fit('crop').format('jpg').quality(85).url();
+}

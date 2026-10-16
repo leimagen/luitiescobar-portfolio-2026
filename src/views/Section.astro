@@ -24,11 +24,11 @@ const others = disciplines.filter((o) => o.id !== d.id);
 const filters = d.subcategories.filter((s) => items.some((p) => p.subcategory === s.id));
 ---
 
-<BaseLayout title={`${d.word[lang].join(' ')} — Luiti Escobar`} description={d.description[lang]} current={d.id}>
+<BaseLayout title={`${d.word[lang].join(' ')} | Luiti Escobar`} description={d.description[lang]} current={d.id}>
   <section class="container sec-hero">
     <div class="sec-head">
       <div>
-        <p class="label">{pad(index + 1)}/{pad(disciplines.length)} — {t('section.label')}</p>
+        <p class="label">{pad(index + 1)}/{pad(disciplines.length)} · {t('section.label')}</p>
         <p class="sec-head__small">{t('disciplines.thats')}</p>
         <h1>{d.word[lang].map((w) => <span>{w}</span>)}</h1>
       </div>

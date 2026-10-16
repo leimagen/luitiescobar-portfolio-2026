@@ -18,7 +18,7 @@ const key = () => randomUUID().replace(/-/g, '').slice(0, 12);
 
 const exists = await client.fetch(`count(*[_type == "project" && slug.current == $slug])`, { slug: SLUG }, { perspective: 'raw' });
 if (exists) {
-  console.log('Project already exists — nothing to do.');
+  console.log('Project already exists - nothing to do.');
   process.exit(0);
 }
 
@@ -37,8 +37,8 @@ const characters = [
 const stills: Record<string, { illustration: object; shot: object }> = {};
 for (const c of characters) {
   stills[c.id] = {
-    illustration: await image(`${c.id}-illustration.jpg`, `${c.name} — original illustration`),
-    shot: await image(`${c.id}-shot.jpg`, `${c.name} — AI cinematic shot`),
+    illustration: await image(`${c.id}-illustration.jpg`, `${c.name} - original illustration`),
+    shot: await image(`${c.id}-shot.jpg`, `${c.name} - AI cinematic shot`),
   };
 }
 
@@ -54,40 +54,40 @@ const video = (id: string, caption: string) => ({ _type: 'videoEmbed', _key: key
 
 const en = [
   h2('The starting point'),
-  p('I\'m not primarily an illustrator, but every now and then I enjoy designing characters. I work in "seasons": a month of 3D modelling, a month of programming, a month of drawing. These characters came out of those drawing seasons — some of them painted live on stream.'),
-  p('After using ', ['Kling AI 3.0 with Omni reference'], ' to bring my 3D Telmedia device model to life, I applied the same approach to my illustrations. Each clip starts from the original drawing and ends on a cinematic frame — left, the illustration; right, the final shot.'),
+  p('I\'m not primarily an illustrator, but every now and then I enjoy designing characters. I work in "seasons": a month of 3D modelling, a month of programming, a month of drawing. These characters came out of those drawing seasons, some of them painted live on stream.'),
+  p('After using ', ['Kling AI 3.0 with Omni reference'], ' to bring my 3D Telmedia device model to life, I applied the same approach to my illustrations. Each clip starts from the original drawing and ends on a cinematic frame. Left, the illustration; right, the final shot.'),
   h2('Ninja 2062'),
   pair('ninja-2062'),
-  video('ninja-2062', 'Ninja 2062 — illustration to shot'),
+  video('ninja-2062', 'Ninja 2062 - illustration to shot'),
   p('The prompt also asked the model to fix the body proportions of the original drawing.'),
   h2('Fallen Angel'),
   pair('fallen-angel'),
-  video('fallen-angel', 'Fallen Angel — illustration to shot'),
-  p('Even from rougher illustrations, the results kept surprising me — it felt like anything could come to life.'),
+  video('fallen-angel', 'Fallen Angel - illustration to shot'),
+  p('Even from rougher illustrations, the results kept surprising me. It felt like anything could come to life.'),
   h2('Stealther'),
   pair('stealther'),
-  video('stealther', 'Stealther — illustration to shot'),
-  p('Ironically, the roughest of the illustrations gave the best result — probably because my prompting had improved by then. The rope still looks a bit funny, but ', ['that end frame'], ' made it worth it.'),
+  video('stealther', 'Stealther - illustration to shot'),
+  p('Ironically, the roughest of the illustrations gave the best result, probably because my prompting had improved by then. The rope still looks a bit funny, but ', ['that end frame'], ' made it worth it.'),
   h2('Fantasy Mage'),
   pair('fantasy-mage'),
 ];
 
 const es = [
   h2('El punto de partida'),
-  p('No soy ilustrador de oficio, pero de vez en cuando disfruto diseñando personajes. Trabajo por "temporadas": un mes de modelado 3D, un mes de programación, un mes de dibujo. Estos personajes salieron de esas temporadas de dibujo — algunos los pinté en vivo en streams.'),
-  p('Después de usar ', ['Kling AI 3.0 con referencia Omni'], ' para darle vida a mi modelo 3D del dispositivo Telmedia, apliqué el mismo enfoque a mis ilustraciones. Cada clip parte del dibujo original y termina en un plano cinematográfico — a la izquierda, la ilustración; a la derecha, el plano final.'),
+  p('No soy ilustrador de oficio, pero de vez en cuando disfruto diseñando personajes. Trabajo por "temporadas": un mes de modelado 3D, un mes de programación, un mes de dibujo. Estos personajes salieron de esas temporadas de dibujo, y algunos los pinté en vivo en streams.'),
+  p('Después de usar ', ['Kling AI 3.0 con referencia Omni'], ' para darle vida a mi modelo 3D del dispositivo Telmedia, apliqué el mismo enfoque a mis ilustraciones. Cada clip parte del dibujo original y termina en un plano cinematográfico. A la izquierda, la ilustración; a la derecha, el plano final.'),
   h2('Ninja 2062'),
   pair('ninja-2062'),
-  video('ninja-2062', 'Ninja 2062 — de la ilustración al plano'),
+  video('ninja-2062', 'Ninja 2062 - de la ilustración al plano'),
   p('En el prompt también le pedí al modelo corregir las proporciones del cuerpo del dibujo original.'),
   h2('Fallen Angel'),
   pair('fallen-angel'),
-  video('fallen-angel', 'Fallen Angel — de la ilustración al plano'),
-  p('Incluso partiendo de ilustraciones más toscas, los resultados me seguían sorprendiendo — se sentía como si cualquier cosa pudiera cobrar vida.'),
+  video('fallen-angel', 'Fallen Angel - de la ilustración al plano'),
+  p('Incluso partiendo de ilustraciones más toscas, los resultados me seguían sorprendiendo. Se sentía como si cualquier cosa pudiera cobrar vida.'),
   h2('Stealther'),
   pair('stealther'),
-  video('stealther', 'Stealther — de la ilustración al plano'),
-  p('Irónicamente, la más tosca de las ilustraciones dio el mejor resultado — probablemente porque para entonces mis prompts habían mejorado. La cuerda todavía se ve un poco rara, pero ', ['ese frame final'], ' lo valió.'),
+  video('stealther', 'Stealther - de la ilustración al plano'),
+  p('Irónicamente, la más tosca de las ilustraciones dio el mejor resultado, probablemente porque para entonces mis prompts habían mejorado. La cuerda todavía se ve un poco rara, pero ', ['ese frame final'], ' lo valió.'),
   h2('Fantasy Mage'),
   pair('fantasy-mage'),
 ];
@@ -109,8 +109,8 @@ await client.create({
   tools: 'Kling AI 3.0 Omni',
   lead: {
     _type: 'localeText',
-    en: 'Four of my own character illustrations turned into cinematic shots with Kling AI — each clip starts from the original drawing and ends on a film-like frame.',
-    es: 'Cuatro de mis ilustraciones de personajes convertidas en planos cinematográficos con Kling AI — cada clip parte del dibujo original y termina en un frame de cine.',
+    en: 'Four of my own character illustrations turned into cinematic shots with Kling AI. Each clip starts from the original drawing and ends on a film-like frame.',
+    es: 'Cuatro de mis ilustraciones de personajes convertidas en planos cinematográficos con Kling AI. Cada clip parte del dibujo original y termina en un frame de cine.',
   },
   body: { _type: 'localeBlockContent', en, es },
 });

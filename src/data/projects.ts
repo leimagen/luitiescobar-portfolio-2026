@@ -34,7 +34,7 @@ type Row = [slug: string, title: string, subcategory: string, aspect: number, co
 
 const rows: Record<DisciplineId, Row[]> = {
   design: [
-    ['nebula-coffee-branding', 'Nébula Coffee — Branding', 'branding', 4 / 5, ['#ffd9a8', '#ff8a3c'], 12, '2026-09-01', 'both'],
+    ['nebula-coffee-branding', 'Nébula Coffee - Branding', 'branding', 4 / 5, ['#ffd9a8', '#ff8a3c'], 12, '2026-09-01', 'both'],
     ['atlas-fintech-ads', 'Atlas Fintech Ads', 'ads', 2 / 3, ['#1f1f1f', '#ffb23c'], 160, '2026-07-12', 'selected'],
     ['verde-market-identity', 'Verde Market Identity', 'branding', 4 / 3, ['#fbe7cf', '#ff8a3c'], 128, '2026-05-20', 'selected'],
     ['solar-fest-posters', 'Solar Fest Posters', 'digital-marketing', 2 / 3, ['#ffb23c', '#f4efe6'], 74, '2026-04-02'],
@@ -45,7 +45,7 @@ const rows: Record<DisciplineId, Row[]> = {
   ],
   motion: [
     ['showreel-2026', 'Showreel 2026', '3d', 4 / 3, ['#bfefff', '#3a6bff'], 49, '2026-09-10', 'both'],
-    ['orbit-3d-loop', 'Orbit — 3D Loop', '3d', 4 / 5, ['#0f1a3a', '#00d4ff'], 17, '2026-08-22', 'selected'],
+    ['orbit-3d-loop', 'Orbit - 3D Loop', '3d', 4 / 5, ['#0f1a3a', '#00d4ff'], 17, '2026-08-22', 'selected'],
     ['logo-reveal-pack', 'Logo Reveal Pack', '2d', 1, ['#e8eefc', '#3a6bff'], 86, '2026-08-01'],
     ['paper-cut-25d', 'Paper Cut 2.5D', '2-5d', 2 / 3, ['#d6e1ff', '#0f1a3a'], 165, '2026-07-15', 'selected'],
     ['explainer-atlas', 'Explainer: Atlas', '2d', 16 / 10, ['#00d4ff', '#e8eefc'], 160, '2026-06-30'],
@@ -54,7 +54,7 @@ const rows: Record<DisciplineId, Row[]> = {
     ['kinetic-poster', 'Kinetic Poster', '2d', 2 / 3, ['#0f1a3a', '#00d4ff'], 91, '2026-04-19'],
     ['ui-motion-kit', 'UI Motion Kit', '2d', 1, ['#e8eefc', '#3a6bff'], 128, '2026-03-27'],
     ['bloom-titles', 'Bloom Titles', '2-5d', 4 / 3, ['#d6e1ff', '#0f1a3a'], 165, '2026-02-14'],
-    ['drift-short', 'Drift — Short', '2-5d', 4 / 5, ['#00d4ff', '#e8eefc'], 22, '2026-01-08'],
+    ['drift-short', 'Drift - Short', '2-5d', 4 / 5, ['#00d4ff', '#e8eefc'], 22, '2026-01-08'],
     ['isometric-city', 'Isometric City', '3d', 1, ['#3a6bff', '#bfefff'], 59, '2025-11-30'],
   ],
   ai: [
@@ -68,11 +68,11 @@ const rows: Record<DisciplineId, Row[]> = {
     ['neo-botanica', 'Neo Botanica', 'video', 9 / 16, ['#ffd0d9', '#ff2e7a'], 52, '2025-12-15'],
   ],
   '3d': [
-    ['casa-lumbre-interior', 'Casa Lumbre — Interior', 'interiors', 2 / 3, ['#e3f9c4', '#3ed23e'], 86, '2026-09-08', 'both'],
+    ['casa-lumbre-interior', 'Casa Lumbre - Interior', 'interiors', 2 / 3, ['#e3f9c4', '#3ed23e'], 86, '2026-09-08', 'both'],
     ['aero-chair', 'Aero Chair', 'industrial', 9 / 16, ['#eef1e8', '#b6f23a'], 54, '2026-08-18', 'selected'],
     ['desk-lamp-concept', 'Desk Lamp Concept', 'industrial', 2 / 3, ['#d9efd0', '#3ed23e'], 22, '2026-07-21', 'selected'],
     ['loft-render', 'Loft Render', 'interiors', 16 / 10, ['#14210f', '#b6f23a'], 61, '2026-06-11'],
-    ['speaker-industrial', 'Speaker — Industrial Design', 'industrial', 1, ['#eef1e8', '#3ed23e'], 35, '2026-05-06'],
+    ['speaker-industrial', 'Speaker - Industrial Design', 'industrial', 1, ['#eef1e8', '#3ed23e'], 35, '2026-05-06'],
     ['pavilion-01', 'Pavilion 01', 'interiors', 4 / 3, ['#d9efd0', '#14210f'], 47, '2026-03-30'],
     ['toy-robot-model', 'Toy Robot Model', 'models', 4 / 5, ['#b6f23a', '#eef1e8'], 73, '2026-02-21'],
     ['ceramic-set', 'Ceramic Set', 'models', 1, ['#e3f9c4', '#3ed23e'], 19, '2026-01-12'],

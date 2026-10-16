@@ -16,7 +16,7 @@ const types = [...disciplines.map((d) => d.name[lang]), t('form.type.other')];
       <p class="label">{t('contact.label')}</p>
       <h1>{t('contact.title.1')} <span>{t('contact.title.2')}</span></h1>
       <p class="contact__text">{t('contact.text')}</p>
-      <p class="avail"><i aria-hidden="true"></i>{location[lang]} — {t('contact.availability')}</p>
+      <p class="avail"><i aria-hidden="true"></i>{location[lang]} · {t('contact.availability')}</p>
 
       <dl class="channels">
         <div>
@@ -83,7 +83,7 @@ const types = [...disciplines.map((d) => d.name[lang]), t('form.type.other')];
       e.preventDefault();
       if (!form.reportValidity()) return;
       const data = new FormData(form);
-      const subject = `${data.get('type')} — ${data.get('name')}`;
+      const subject = `${data.get('type')} - ${data.get('name')}`;
       const body = `${data.get('message')}\n\n${data.get('name')}\n${data.get('email')}`;
       window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });

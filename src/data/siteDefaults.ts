@@ -1,7 +1,7 @@
 import type { Lang } from '../i18n/ui';
 
 /**
- * Default profile data (from the full CV). Pure module — no CMS imports — so the Studio
+ * Default profile data (from the full CV). Pure module - no CMS imports - so the Studio
  * seed script can reuse it. The live site applies Sanity "Site settings" on top (see site.ts).
  */
 export const defaultEmail = 'info@luitiescobar.com';
@@ -29,8 +29,8 @@ export const defaultExperience: ExperienceItem[] = [
     role: { en: 'Senior Digital Designer', es: 'Diseñador Digital Senior' },
     place: { en: 'Panama · Remote', es: 'Panamá · Remoto' },
     summary: {
-      en: 'Digital advertising for Samsung Latin America and the Caribbean across 20+ markets — social content, banners and promotional assets for product launches, seasonal activations and regional campaigns.',
-      es: 'Publicidad digital para Samsung Latinoamérica y el Caribe en más de 20 mercados — contenido para redes, banners y piezas promocionales para lanzamientos, activaciones estacionales y campañas regionales.',
+      en: 'Digital advertising for Samsung Latin America and the Caribbean across 20+ markets: social content, banners and promotional assets for product launches, seasonal activations and regional campaigns.',
+      es: 'Publicidad digital para Samsung Latinoamérica y el Caribe en más de 20 mercados: contenido para redes, banners y piezas promocionales para lanzamientos, activaciones estacionales y campañas regionales.',
     },
   },
   {
@@ -38,8 +38,8 @@ export const defaultExperience: ExperienceItem[] = [
     role: { en: 'Senior Motion Designer · Art Director', es: 'Diseñador de Movimiento Senior · Director de Arte' },
     place: { en: 'Panama', es: 'Panamá' },
     summary: {
-      en: 'Art direction and motion design for agency clients such as Digicel — social animation, brand campaigns and digital advertising, plus creative direction for junior designers.',
-      es: 'Dirección de arte y motion design para clientes de agencia como Digicel — animación para redes, campañas de marca y publicidad digital, además de dirección creativa a diseñadores junior.',
+      en: 'Art direction and motion design for agency clients such as Digicel: social animation, brand campaigns and digital advertising, plus creative direction for junior designers.',
+      es: 'Dirección de arte y motion design para clientes de agencia como Digicel: animación para redes, campañas de marca y publicidad digital, además de dirección creativa a diseñadores junior.',
     },
   },
   {
@@ -47,8 +47,8 @@ export const defaultExperience: ExperienceItem[] = [
     role: { en: 'Senior Motion Designer · Art Director', es: 'Diseñador de Movimiento Senior · Director de Arte' },
     place: { en: 'Panama', es: 'Panamá' },
     summary: {
-      en: 'Full broadcast identity for Oye, the new TV channel from Medcom Group — channel IDs, bumpers, lower thirds and on-air packages, and the motion guidelines that defined it from launch.',
-      es: 'Identidad de broadcast completa para Oye, el nuevo canal de Medcom Group — IDs, bumpers, lower thirds y paquetes gráficos, y las guías de movimiento que lo definieron desde su lanzamiento.',
+      en: 'Full broadcast identity for Oye, the new TV channel from Medcom Group: channel IDs, bumpers, lower thirds and on-air packages, and the motion guidelines that defined it from launch.',
+      es: 'Identidad de broadcast completa para Oye, el nuevo canal de Medcom Group: IDs, bumpers, lower thirds y paquetes gráficos, y las guías de movimiento que lo definieron desde su lanzamiento.',
     },
   },
   {
@@ -74,8 +74,8 @@ export const defaultExperience: ExperienceItem[] = [
     role: { en: 'Motion Designer · Senior Graphic Designer', es: 'Diseñador de Movimiento · Diseñador Gráfico Senior' },
     place: { en: 'Panama', es: 'Panamá' },
     summary: {
-      en: 'Interfaces for websites and multimedia experiences — web and app UI, motion graphics and digital advertising.',
-      es: 'Interfaces para sitios web y experiencias multimedia — UI web y de aplicaciones, motion graphics y publicidad digital.',
+      en: 'Interfaces for websites and multimedia experiences: web and app UI, motion graphics and digital advertising.',
+      es: 'Interfaces para sitios web y experiencias multimedia: UI web y de aplicaciones, motion graphics y publicidad digital.',
     },
   },
   {

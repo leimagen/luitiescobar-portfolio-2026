@@ -46,7 +46,7 @@ const file = src && !embed ? src : undefined;
 
   <div class="reel__poster">
     {showTag && <span class="reel__tag">{title}</span>}
-    <button class="reel__play" type="button" disabled={!src} aria-label={src ? `${t('reel.play')} — ${title}` : t('reel.soon')}>
+    <button class="reel__play" type="button" disabled={!src} aria-label={src ? `${t('reel.play')}: ${title}` : t('reel.soon')}>
       <Lens class="reel__lens" />
       <span class="reel__content">
         <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><path d="M0 0L12 7L0 14Z" fill="currentColor" /></svg>
@@ -117,6 +117,8 @@ const file = src && !embed ? src : undefined;
     .reel__tag { left: 28px; top: 24px; font-size: 12px; }
     .reel__play { width: 128px; }
     .reel__play:not(:disabled) .reel__label { display: inline; font-size: 13px; letter-spacing: .3em; }
+    /* "Reproducir" is twice as long as "Play": tighter tracking keeps it inside the lens */
+    .reel__play:not(:disabled) .reel__label:lang(es) { font-size: 12px; letter-spacing: .12em; }
     .reel__play:disabled .reel__label { top: calc(100% + 56px); font-size: 12px; }
   }
 </style>
