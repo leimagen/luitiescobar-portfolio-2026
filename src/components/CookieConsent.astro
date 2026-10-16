@@ -1,0 +1,118 @@
+---
+/**
+ * Cookie consent (GDPR / AEPD): Google Analytics only loads after "Accept".
+ * Rejecting is as easy as accepting; the choice lives in localStorage and can be changed
+ * from any element with [data-cookie-settings] (footer, cookie policy page).
+ */
+import { GA_ID } from '../lib/seo';
+import { getLang, localizePath, useTranslations } from '../i18n/utils';
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+// dev and preview builds never talk to Google
+const ga = import.meta.env.PROD ? GA_ID : '';
+---
+
+<div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" data-ga={ga} hidden>
+  <p class="consent__title" id="consent-title">{t('consent.title')}</p>
+  <p class="consent__text">
+    {t('consent.text')} <a href={localizePath('/cookies', lang)}>{t('consent.policy')}</a>
+  </p>
+  <div class="consent__actions">
+    <button type="button" class="consent__btn" data-consent="denied">{t('consent.reject')}</button>
+    <button type="button" class="consent__btn is-primary" data-consent="granted">{t('consent.accept')}</button>
+  </div>
+</div>
+
+<script>
+  type Choice = 'granted' | 'denied';
+  const KEY = 'consent:analytics';
+  const box = document.getElementById('consent') as HTMLElement;
+  const gaId = box.dataset.ga;
+  const w = window as any;
+
+  const read = (): Choice | null => {
+    try { return localStorage.getItem(KEY) as Choice | null; } catch { return null; }
+  };
+  const write = (v: Choice) => {
+    try { localStorage.setItem(KEY, v); } catch { /* storage unavailable: ask again next visit */ }
+  };
+
+  function loadAnalytics() {
+    if (!gaId) return;
+    w[`ga-disable-${gaId}`] = false;
+    if (w.__gaLoaded) return;
+    w.__gaLoaded = true;
+    w.dataLayer = w.dataLayer || [];
+    w.gtag = function gtag() { w.dataLayer.push(arguments); };
+    w.gtag('js', new Date());
+    w.gtag('config', gaId);
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+    document.head.appendChild(s);
+  }
+
+  /** stop tracking on this page and delete the _ga cookies Google already set */
+  function stopAnalytics() {
+    if (gaId) w[`ga-disable-${gaId}`] = true;
+    const root = location.hostname.replace(/^www\./, '');
+    document.cookie.split(';').map((c) => c.split('=')[0].trim()).filter((n) => n.startsWith('_ga')).forEach((name) => {
+      for (const domain of ['', location.hostname, `.${root}`]) {
+        document.cookie = `${name}=; Max-Age=0; path=/${domain ? `; domain=${domain}` : ''}`;
+      }
+    });
+  }
+
+  // force a reflow between unhiding and the class so the fade-in runs (rAF stalls in background tabs)
+  const show = () => { box.hidden = false; void box.offsetHeight; box.classList.add('is-open'); };
+  const hide = () => { box.classList.remove('is-open'); setTimeout(() => (box.hidden = true), 300); };
+
+  box.addEventListener('click', (e) => {
+    const choice = (e.target as HTMLElement).closest<HTMLElement>('[data-consent]')?.dataset.consent as Choice | undefined;
+    if (!choice) return;
+    write(choice);
+    choice === 'granted' ? loadAnalytics() : stopAnalytics();
+    hide();
+  });
+  document.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('[data-cookie-settings]')) { e.preventDefault(); show(); }
+  });
+
+  const saved = read();
+  if (saved === 'granted') loadAnalytics();
+  else if (!saved) show();
+</script>
+
+<style>
+  .consent {
+    position: fixed; z-index: 60; left: 16px; right: 16px; bottom: 16px;
+    padding: 20px; border: 1px solid var(--line); border-radius: 22px;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow: 0 18px 50px rgb(20 20 20 / .1);
+    opacity: 0; translate: 0 12px; transition: opacity .3s var(--ease), translate .3s var(--ease);
+  }
+  .consent.is-open { opacity: 1; translate: 0 0; }
+  .consent__title { font-family: var(--mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .consent__text { margin-top: 8px; font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+  .consent__text a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  .consent__actions { display: flex; gap: 10px; margin-top: 16px; }
+  /* same size and weight for both choices: rejecting must be as easy as accepting */
+  .consent__btn {
+    flex: 1; height: 44px; border-radius: 999px; border: 1px solid var(--ink);
+    font: inherit; font-size: 14px; color: var(--ink); background: transparent; cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .consent__btn:hover { background: var(--ink); color: var(--bg); }
+  .consent__btn.is-primary { background: var(--ink); color: var(--bg); }
+  .consent__btn.is-primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+  .consent__btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  @media (min-width: 768px) {
+    .consent { left: 32px; right: auto; bottom: 32px; width: 420px; padding: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .consent { transition: none; }
+  }
+</style>

@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-17 (favicon, GA4 + SEO carried over from the old site)
+Last update: 2026-10-17 (cookie consent banner + cookie policy)
 
 ---
 
@@ -117,10 +117,15 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
   capture of the hero, made with headless Edge); project pages use their cover cropped to 1200×630 by Sanity
   (`ogImageUrl` in src/lib/sanity.ts). LinkedIn caches previews: refresh with https://www.linkedin.com/post-inspector/
 - Analytics/SEO (ported from the old site's index.html, github.com/leimagen/luitiescobar): Google Analytics 4
-  **G-J1EW2HGLJB** (`src/lib/seo.ts`, loaded only in production builds, no consent banner, same as before),
+  **G-J1EW2HGLJB** (`src/lib/seo.ts`, production builds only, **loaded only after consent**, see below),
   meta author/keywords, schema.org JSON-LD (Person + WebSite on every page, CreativeWork + VideoObject on projects),
   hreflang incl. x-default, `/sitemap.xml` (src/pages/sitemap.xml.ts, EN+ES with alternates), `public/robots.txt`.
   Search Console: submit https://luitiescobar.com/sitemap.xml there (not done by Claude; needs the user's Google login).
+- Cookie consent (GDPR/AEPD): `src/components/CookieConsent.astro` (in BaseLayout). GA4 is injected only after
+  "Accept"; "Reject" has the same weight; choice in localStorage `consent:analytics`; rejecting later deletes the
+  _ga cookies. Any `[data-cookie-settings]` element reopens it (footer "Cookie settings", policy page button).
+  Policy page /cookies + /es/cookies (`src/views/Cookies.astro`; lists _ga, _ga_J1EW2HGLJB, local storage keys).
+  Vimeo (dnt=1) and YouTube (nocookie) embeds load only on play, so they need no consent.
 - Favicon: "le" in Outfit (l 500 / e 300, from the logo font) light on an ink rounded tile: public/favicon.svg,
   favicon.ico (16/32/48), apple-touch-icon.png (180).
 
@@ -166,5 +171,6 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       header video + cover frame, paragraph in the Ninja section, Fantasy Mage loop moved into the body.
       /media/ai/ninja-2062-short.mp4, script studio/scripts/ai/ninjaShort.ts
 - [x] Favicon, GA4, JSON-LD, sitemap, robots.txt (2026-10-17)
-- [ ] Redirect www → apex (both serve the site today); cookie consent for GA4 (EU)
+- [x] Cookie consent banner + cookie policy page (2026-10-17)
+- [ ] Redirect www → apex (both serve the site today)
 - [ ] Confirm placeholder dates (2026-03-xx) of re-uploaded Vimeo pieces

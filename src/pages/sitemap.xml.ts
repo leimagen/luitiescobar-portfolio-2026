@@ -11,6 +11,7 @@ export const GET: APIRoute = ({ site }) => {
     ...projects.map((p) => ({ path: `/work/${p.slug}/`, lastmod: p.date || today })),
     { path: '/about/', lastmod: today },
     { path: '/contact/', lastmod: today },
+    { path: '/cookies/', lastmod: '2026-10-17' },
   ];
   const url = (path: string) => new URL(path, site).href;
   const alternates = (path: string) =>

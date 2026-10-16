@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { email } from '../data/site';
+import { getLang, useTranslations } from '../i18n/utils';
+import { GA_ID } from '../lib/seo';
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const gaSuffix = GA_ID.replace(/^G-/, '');
+
+const copy = {
+  en: {
+    label: '(Legal)',
+    title: 'Cookie policy',
+    updated: 'Last updated: 17 October 2026',
+    intro: `This site belongs to Luiti Escobar (Valencia, Spain). It works without cookies: the only ones it can set are Google Analytics cookies, and only if you accept them in the banner. You can write to ${email} with any question.`,
+    whatTitle: 'What cookies are',
+    what: 'Cookies are small files a website stores in your browser. Some are needed for the site to work; others, like analytics cookies, are optional and need your consent.',
+    usedTitle: 'Cookies used on this site',
+    cols: ['Cookie', 'Provider', 'Purpose', 'Duration'],
+    rows: [
+      ['_ga', 'Google Analytics', 'Tells visits apart to count unique visitors.', '2 years'],
+      [`_ga_${gaSuffix}`, 'Google Analytics', 'Keeps the state of the current visit.', '2 years'],
+    ],
+    usedNote: 'These are analytics cookies. They are only set after you click "Accept", and I use the data only in aggregate to see which projects get visited.',
+    storageTitle: 'Other data stored in your browser',
+    storage: [
+      ['consent:analytics', 'Remembers whether you accepted or rejected analytics cookies, so the banner does not appear on every page.'],
+      ['liked:<project>', 'Remembers which projects you liked.'],
+    ],
+    storageNote: 'Both live in your browser\'s local storage, are never sent to anyone and are not used to track you. Like counts are kept with an anonymous code made from your connection, which cannot identify you.',
+    thirdTitle: 'Third parties',
+    third: 'Google Analytics is provided by Google Ireland Limited. Google may process data in the United States under the EU-US Data Privacy Framework. Embedded Vimeo and YouTube players load only when you press play, in their cookie-less modes.',
+    thirdLink: "Google's privacy policy",
+    changeTitle: 'Changing your choice',
+    change: 'You can accept or reject analytics cookies at any time. If you reject them after accepting, the existing Google Analytics cookies are deleted. You can also block or delete cookies in your browser settings.',
+    changeBtn: 'Cookie settings',
+  },
+  es: {
+    label: '(Legal)',
+    title: 'Política de cookies',
+    updated: 'Última actualización: 17 de octubre de 2026',
+    intro: `Este sitio pertenece a Luiti Escobar (Valencia, España). Funciona sin cookies: las únicas que puede instalar son las de Google Analytics, y solo si las aceptas en el aviso. Para cualquier duda puedes escribir a ${email}.`,
+    whatTitle: 'Qué son las cookies',
+    what: 'Las cookies son pequeños archivos que un sitio web guarda en tu navegador. Algunas son necesarias para que el sitio funcione; otras, como las de analítica, son opcionales y necesitan tu consentimiento.',
+    usedTitle: 'Cookies que usa este sitio',
+    cols: ['Cookie', 'Proveedor', 'Finalidad', 'Duración'],
+    rows: [
+      ['_ga', 'Google Analytics', 'Distingue visitas para contar visitantes únicos.', '2 años'],
+      [`_ga_${gaSuffix}`, 'Google Analytics', 'Mantiene el estado de la visita actual.', '2 años'],
+    ],
+    usedNote: 'Son cookies de analítica. Solo se instalan después de pulsar "Aceptar", y uso los datos únicamente de forma agregada para saber qué proyectos se visitan.',
+    storageTitle: 'Otros datos guardados en tu navegador',
+    storage: [
+      ['consent:analytics', 'Recuerda si aceptaste o rechazaste las cookies de analítica, para que el aviso no aparezca en cada página.'],
+      ['liked:<proyecto>', 'Recuerda qué proyectos te gustaron.'],
+    ],
+    storageNote: 'Ambos se guardan en el almacenamiento local de tu navegador, nunca se envían a nadie y no sirven para rastrearte. Los likes se cuentan con un código anónimo generado a partir de tu conexión, que no permite identificarte.',
+    thirdTitle: 'Terceros',
+    third: 'Google Analytics es un servicio de Google Ireland Limited. Google puede tratar datos en Estados Unidos al amparo del Marco de Privacidad de Datos UE-EE. UU. Los reproductores de Vimeo y YouTube solo se cargan al pulsar play, en sus modos sin cookies.',
+    thirdLink: 'Política de privacidad de Google',
+    changeTitle: 'Cambiar tu elección',
+    change: 'Puedes aceptar o rechazar las cookies de analítica en cualquier momento. Si las rechazas después de haberlas aceptado, se borran las cookies de Google Analytics existentes. También puedes bloquearlas o borrarlas desde la configuración de tu navegador.',
+    changeBtn: 'Configurar cookies',
+  },
+}[lang];
+---
+
+<BaseLayout title={t('cookies.meta')} description={copy.intro}>
+  <article class="container legal">
+    <p class="label">{copy.label}</p>
+    <h1>{copy.title}</h1>
+    <p class="legal__updated">{copy.updated}</p>
+    <p class="legal__intro">{copy.intro}</p>
+
+    <h2>{copy.whatTitle}</h2>
+    <p>{copy.what}</p>
+
+    <h2>{copy.usedTitle}</h2>
+    <div class="legal__table">
+      <table>
+        <thead><tr>{copy.cols.map((c) => <th scope="col">{c}</th>)}</tr></thead>
+        <tbody>{copy.rows.map((r) => <tr>{r.map((c, i) => (i === 0 ? <td><code>{c}</code></td> : <td>{c}</td>))}</tr>)}</tbody>
+      </table>
+    </div>
+    <p>{copy.usedNote}</p>
+
+    <h2>{copy.storageTitle}</h2>
+    <ul>{copy.storage.map(([k, v]) => <li><code>{k}</code>: {v}</li>)}</ul>
+    <p>{copy.storageNote}</p>
+
+    <h2>{copy.thirdTitle}</h2>
+    <p>{copy.third} <a href={`https://policies.google.com/privacy?hl=${lang}`} rel="noopener" target="_blank">{copy.thirdLink}</a>.</p>
+
+    <h2>{copy.changeTitle}</h2>
+    <p>{copy.change}</p>
+    <button type="button" class="legal__btn" data-cookie-settings>{copy.changeBtn}</button>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal { max-width: 760px; padding-top: 32px; color: var(--ink-2); }
+  .legal .label { margin-bottom: 18px; }
+  h1 { color: var(--ink); font-size: clamp(44px, 9vw, 88px); font-weight: 200; line-height: .95; letter-spacing: -.03em; }
+  h2 { color: var(--ink); font-size: 24px; font-weight: 300; margin: 48px 0 12px; }
+  p, li { font-size: 17px; line-height: 1.65; }
+  p + p { margin-top: 12px; }
+  .legal__updated { margin-top: 18px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .legal__intro { margin-top: 28px; font-size: 21px; font-weight: 200; line-height: 1.45; color: var(--ink); }
+  ul { padding-left: 20px; margin-bottom: 12px; }
+  li + li { margin-top: 6px; }
+  a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  code { font-family: var(--mono); font-size: .85em; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+  .legal__table { overflow-x: auto; margin: 4px 0 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 12px 16px; vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
+  tr + tr td { border-top: 1px solid var(--line); }
+  .legal__btn {
+    margin-top: 20px; height: 44px; padding: 0 22px; border-radius: 999px; border: 1px solid var(--ink);
+    font: inherit; font-size: 14px; color: var(--bg); background: var(--ink); cursor: pointer;
+  }
+  .legal__btn:hover { background: var(--ink-2); border-color: var(--ink-2); }
+
+  @media (min-width: 768px) {
+    .legal { padding-top: 56px; }
+    h2 { font-size: 30px; margin-top: 64px; }
+    p, li { font-size: 18px; }
+  }
+</style>
