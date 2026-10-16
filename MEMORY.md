@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-16 (first AI Media project)
+Last update: 2026-10-16 (AI Media #2 Telmedia)
 
 ---
 
@@ -129,7 +129,10 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - [x] AI Media #1 "From Illustration to AI Cinematic Shot" (draft): 4 Kling AI 3.0 Omni clips from the user's own
       illustrations (Ninja 2062, Fallen Angel, Stealther, Fantasy Mage), from the LinkedIn article
       linkedin.com/pulse/from-illustration-ai-cinematic-shot-article-luiti-escobar-wrkte. Script: studio/scripts/ai/illustrationToAi.ts
-- [ ] AI Media #2 and #3 (user will send material)
+- [x] AI Media #2 "Telmedia Device — Generative AI short" (draft): 15s Kling AI short with audio from the user's Blender
+      model (/media/ai/telmedia-device-short.mp4), reference frames + renders strip, from the LinkedIn article
+      es.linkedin.com/pulse/telmedia-device-generative-ai-short-luiti-escobar-biqce. Script: studio/scripts/ai/telmediaShort.ts
+- [ ] AI Media #3 (user will send material)
 - [ ] 3D interior design project (next, user will send material)
 - [ ] New motion reel (old Vimeo 1178811549 was taken down over music licensing) — Motion Design shows "Reel coming soon" until then
 - [ ] Rebuild on publish (Sanity webhook → GitHub Action / Cloudflare build)
