@@ -1,0 +1,54 @@
+---
+import Reel from '../Reel.astro';
+
+// Portable Text: video inside a case study.
+// Short .mp4 clips play as silent loops (like a GIF); Vimeo/YouTube use the click-to-play reel.
+const { node } = Astro.props as { node: { url?: string; loop?: boolean; caption?: string } };
+const url = node.url ?? '';
+const isFile = /\.(mp4|webm|mov)(\?|#|$)/i.test(url);
+const loop = isFile && node.loop !== false;
+---
+
+{url && (
+  <figure class="rich__video">
+    {isFile ? (
+      <video
+        src={url}
+        class:list={{ 'is-loop': loop }}
+        autoplay={loop}
+        muted={loop}
+        loop={loop}
+        controls={!loop}
+        playsinline
+        preload="metadata"
+        aria-label={node.caption}
+        data-pt-video
+      ></video>
+    ) : (
+      <Reel title={node.caption ?? ''} src={url} showTag={false} />
+    )}
+    {node.caption && <figcaption>{node.caption}</figcaption>}
+  </figure>
+)}
+
+<script>
+  // respect reduced-motion: no autoplaying loops, show controls instead
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLVideoElement>('[data-pt-video].is-loop').forEach((v) => {
+      v.pause();
+      v.removeAttribute('autoplay');
+      v.controls = true;
+    });
+  }
+</script>
+
+<style>
+  .rich__video { margin: 40px 0; }
+  video { display: block; width: 100%; height: auto; border-radius: 14px; background: #111; }
+  figcaption { margin-top: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  @media (min-width: 768px) {
+    .rich__video { margin: 56px 0; }
+    video { border-radius: 22px; }
+  }
+</style>

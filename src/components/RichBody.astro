@@ -2,6 +2,7 @@
 import { PortableText } from 'astro-portabletext';
 import PtImage from './pt/PtImage.astro';
 import PtImageRow from './pt/PtImageRow.astro';
+import PtVideo from './pt/PtVideo.astro';
 import type { Block } from '../data/caseStudies';
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
 const { blocks = [], portable } = Astro.props;
 /** split "**bold**" markers into text / strong runs */
 const runs = (text: string) => text.split(/\*\*(.+?)\*\*/g).map((t, i) => ({ t, strong: i % 2 === 1 }));
-const components = { type: { altImage: PtImage, imageRow: PtImageRow } };
+const components = { type: { altImage: PtImage, imageRow: PtImageRow, videoEmbed: PtVideo } };
 ---
 
 <div class="rich">

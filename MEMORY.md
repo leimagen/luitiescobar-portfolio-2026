@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-16 (legacy content import)
+Last update: 2026-10-16 (first AI Media project)
 
 ---
 
@@ -60,8 +60,12 @@ wrangler.jsonc      site Worker config (D1 binding, custom domains)
 - **siteSettings** (singleton): Home copy (hero, bio paragraphs), About (role, lead, experience list,
   tools, training, languages), Contact (email, location, availability, titles, socials), per-discipline
   description/tags/reel URL, SEO defaults. Empty fields fall back to the defaults in code.
-- Reel / project video: Vimeo/YouTube link (unlisted `vimeo.com/ID/HASH` supported) or external mp4 —
-  **never upload video files to Sanity** (bandwidth cost). Projects have a `video` field shown on top of the case study.
+- Reel / project video: Vimeo/YouTube link (unlisted `vimeo.com/ID/HASH` supported), external mp4, or a site path —
+  **never upload video files to Sanity** (bandwidth cost). Projects have a `video` field shown on top of the case study,
+  and rich text has a `videoEmbed` block (short mp4 = silent autoplay loop; respects reduced motion).
+- Short clips are served by the site itself from `public/media/` (Workers static assets, ≤25 MiB/file; transcode with
+  H.264 CRF 22, faststart, no audio). R2 is NOT enabled on the Cloudflare account (needs the user to enable it in the
+  dashboard); use Vimeo or R2 for long videos like the reel.
 
 How the site uses it: `src/lib/cms.ts` fetches everything once per build. If `PUBLIC_SANITY_PROJECT_ID`
 is unset, or no project is published yet, the placeholder data in `src/data/` is used.
@@ -121,10 +125,12 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       Curated list + bilingual copy: `studio/scripts/legacy/manifest.json`; importer `importLegacy.ts` (skips existing slugs).
       Dates for re-uploaded Vimeo pieces (2026-03-xx) are placeholders — user to confirm.
 - [ ] User reviews & publishes the drafts in the Studio, then rebuild + deploy the site
-- [ ] Videos still missing (hosted on Behance's own player): Digicel "Multiplicamos x 10" campaign + TV ad,
-      Digicel "Menos plástico", Sheraton Bijao 10th anniversary — need original files or Vimeo links
-- [ ] AI Media: 3–4 new projects (currently only on LinkedIn, informal copy) — user sends files; videos to be self-hosted
-      (proposal: Cloudflare R2 bucket on media.luitiescobar.com), copy rewritten EN/ES
+- Dropped by the user: Digicel "Multiplicamos x 10" / "Menos plástico" and Sheraton Bijao (videos only on Behance's player)
+- [x] AI Media #1 "From Illustration to AI Cinematic Shot" (draft): 4 Kling AI 3.0 Omni clips from the user's own
+      illustrations (Ninja 2062, Fallen Angel, Stealther, Fantasy Mage), from the LinkedIn article
+      linkedin.com/pulse/from-illustration-ai-cinematic-shot-article-luiti-escobar-wrkte. Script: studio/scripts/ai/illustrationToAi.ts
+- [ ] AI Media #2 and #3 (user will send material)
+- [ ] 3D interior design project (next, user will send material)
 - [ ] New motion reel (old Vimeo 1178811549 was taken down over music licensing) — Motion Design shows "Reel coming soon" until then
 - [ ] Rebuild on publish (Sanity webhook → GitHub Action / Cloudflare build)
 - [ ] Contact form backend (Worker + email service)

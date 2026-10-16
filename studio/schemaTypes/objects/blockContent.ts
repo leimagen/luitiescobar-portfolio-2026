@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { ImagesIcon } from '@sanity/icons/Images';
 import { ImageIcon } from '@sanity/icons/Image';
+import { PlayIcon } from '@sanity/icons/Play';
 
 /** Image with required alt text, reused across the schema. */
 export const altImage = defineType({
@@ -54,6 +55,30 @@ export const blockContent = defineType({
       },
     }),
     defineArrayMember({ type: 'altImage' }),
+    defineArrayMember({
+      name: 'videoEmbed',
+      title: 'Video',
+      type: 'object',
+      icon: PlayIcon,
+      fields: [
+        defineField({
+          name: 'url',
+          title: 'Video URL',
+          type: 'url',
+          description: 'Vimeo/YouTube link, an external .mp4, or a site path like /media/ai/clip.mp4',
+          validation: (rule) => rule.required().uri({ allowRelative: true, scheme: ['http', 'https'] }),
+        }),
+        defineField({
+          name: 'loop',
+          title: 'Play as a silent loop',
+          type: 'boolean',
+          description: 'For short .mp4 clips: autoplay muted and loop, like a GIF. Ignored for Vimeo/YouTube.',
+          initialValue: true,
+        }),
+        defineField({ name: 'caption', type: 'string' }),
+      ],
+      preview: { select: { title: 'caption', subtitle: 'url' }, prepare: ({ title, subtitle }) => ({ title: title || 'Video', subtitle }) },
+    }),
     defineArrayMember({
       name: 'imageRow',
       title: 'Image row',

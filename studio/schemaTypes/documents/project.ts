@@ -40,7 +40,8 @@ export const project = defineType({
       title: 'Video URL',
       type: 'url',
       group: 'main',
-      description: 'Vimeo or YouTube link, or a direct .mp4 hosted outside Sanity. Shown at the top of the project page; the cover stays in the galleries.',
+      description: 'Vimeo or YouTube link, an external .mp4, or a site path like /media/ai/clip.mp4. Shown at the top of the project page; the cover stays in the galleries.',
+      validation: (rule) => rule.uri({ allowRelative: true, scheme: ['http', 'https'] }),
     }),
     defineField({
       name: 'discipline',
