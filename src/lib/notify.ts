@@ -72,7 +72,10 @@ export async function notifyLike({ slug, visitor, count, country, city, userAgen
     url,
   ].filter((line) => line !== null).join('\n');
 
-  const res = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+  // accept the token even if it was pasted with a "bot" prefix, quotes or as part of an API URL
+  const token = env.TELEGRAM_BOT_TOKEN.match(/\d+:[\w-]{30,}/)?.[0];
+  if (!token) return console.error('telegram: TELEGRAM_BOT_TOKEN does not look like a bot token');
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text, parse_mode: 'HTML' }),
