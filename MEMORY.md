@@ -82,7 +82,8 @@ Publishing in Sanity requires a **rebuild + deploy** of the site (webhook automa
   project title (ES, fetched live from Sanity), total likes, approximate city/country (request.cf), device + browser
   (user agent), external referrer host sent by the browser, link to the project. Once per visitor+project
   (table `like_notifications`, migration 0002) and max 30/hour. Needs Worker secrets `TELEGRAM_BOT_TOKEN`
-  (@BotFather) and `TELEGRAM_CHAT_ID` (set by the user with `npx wrangler secret put`); without them it does nothing.
+  (@BotFather) and `TELEGRAM_CHAT_ID`; without them it does nothing. **Live and verified 2026-10-17** (both secrets
+  set; on Windows the user stores the token with `Get-Clipboard | npx wrangler secret put TELEGRAM_BOT_TOKEN`).
   The cookie policy mentions this notification (nothing stored).
 - Local: `npx wrangler d1 migrations apply luitiescobar-likes --local`, then `npm run build && npm run preview`.
 
