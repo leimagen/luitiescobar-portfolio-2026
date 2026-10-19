@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-17 (Telegram like notifications)
+Last update: 2026-10-19 (CV EN/ES generator)
 
 ---
 
@@ -179,5 +179,9 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       /media/ai/ninja-2062-short.mp4, script studio/scripts/ai/ninjaShort.ts
 - [x] Favicon, GA4, JSON-LD, sitemap, robots.txt (2026-10-17)
 - [x] Cookie consent banner + cookie policy page (2026-10-17)
+- [x] CV in EN and ES (2026-10-19): `cv/content.mjs` (bilingual content, richer than the site: bullets per role,
+      phone) + `cv/build.mjs` (HTML in the site's style, printed to A4 PDF with headless Edge). `node cv/build.mjs`
+      → cv/out/ (git-ignored): EN and ES, each with and without photo, 2 pages, single column (ATS-readable).
+      When the About data changes in Sanity, update cv/content.mjs too (it is not synced automatically).
 - [ ] Redirect www → apex (both serve the site today)
 - [ ] Confirm placeholder dates (2026-03-xx) of re-uploaded Vimeo pieces

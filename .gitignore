@@ -32,3 +32,6 @@ assets/*.psd
 
 # local CMS dump for draft previews
 .cms-snapshot.json
+
+# generated CV PDFs (contain the phone number)
+cv/out/
