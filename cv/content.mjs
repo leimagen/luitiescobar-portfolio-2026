@@ -71,7 +71,7 @@ export const cv = {
         ],
       },
       {
-        company: 'ModOp (formerly Creative Asylum)', role: 'Flash Developer · Motion Designer', place: 'Panama · Los Angeles', start: '2011-11', end: '2014-10',
+        company: 'ModOp (formerly Creative Asylum)', role: 'Flash Developer & Flash Motion Designer', place: 'Panama · On-site', start: '2011-11', end: '2014-10',
         bullets: [
           'Built interactive web experiences, Flash apps and mini-games (ActionScript 3.0) and animated campaigns for Marvel, Xbox, Disney, Hallmark and PlayStation.',
           'Promoted from Flash Animator to Flash Developer.',
@@ -155,7 +155,7 @@ export const cv = {
         ],
       },
       {
-        company: 'ModOp (antes Creative Asylum)', role: 'Flash Developer · Diseñador de Movimiento', place: 'Panamá · Los Ángeles', start: '2011-11', end: '2014-10',
+        company: 'ModOp (antes Creative Asylum)', role: 'Flash Developer & Flash Motion Designer', place: 'Panamá · Presencial', start: '2011-11', end: '2014-10',
         bullets: [
           'Experiencias web interactivas, aplicaciones y minijuegos Flash (ActionScript 3.0) y campañas animadas para Marvel, Xbox, Disney, Hallmark y PlayStation.',
           'Promovido de Flash Animator a Flash Developer.',

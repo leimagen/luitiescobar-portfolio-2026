@@ -62,8 +62,8 @@ export const defaultExperience: ExperienceItem[] = [
   },
   {
     start: '2011-11', end: '2014-10', company: 'ModOp (formerly Creative Asylum)',
-    role: { en: 'Flash Developer · Motion Designer', es: 'Flash Developer · Diseñador de Movimiento' },
-    place: { en: 'Panama · Los Angeles', es: 'Panamá · Los Ángeles' },
+    role: { en: 'Flash Developer & Flash Motion Designer', es: 'Flash Developer & Flash Motion Designer' },
+    place: { en: 'Panama · On-site', es: 'Panamá · Presencial' },
     summary: {
       en: 'Interactive web experiences and animated campaigns for Marvel, Xbox, Disney, Hallmark and PlayStation; Flash apps and mini-games in ActionScript 3.0. Promoted from Flash Animator to Flash Developer.',
       es: 'Experiencias web interactivas y campañas animadas para Marvel, Xbox, Disney, Hallmark y PlayStation; aplicaciones y minijuegos Flash en ActionScript 3.0. Promovido de Flash Animator a Flash Developer.',
