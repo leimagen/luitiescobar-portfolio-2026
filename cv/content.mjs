@@ -4,6 +4,7 @@
 
 export const contact = {
   name: 'Luiti Escobar',
+  // the phone lives in cv/private.mjs (git-ignored): export const phone = '+34 ...';
   phone: '',
   email: 'info@luitiescobar.com',
   web: 'luitiescobar.com',

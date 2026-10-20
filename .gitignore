@@ -35,3 +35,7 @@ assets/*.psd
 
 # generated CV PDFs (contain the phone number)
 cv/out/
+
+# private CV data (phone number) and private project notes
+cv/private.mjs
+MEMORY.private.md

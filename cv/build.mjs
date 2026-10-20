@@ -10,6 +10,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 import { contact, cv } from './content.mjs';
 
+// phone number from the git-ignored cv/private.mjs; without it the PDFs are built without a phone
+try { contact.phone = (await import('./private.mjs')).phone ?? ''; } catch { /* no private file */ }
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'cv', 'out');
 mkdirSync(out, { recursive: true });
@@ -111,7 +114,7 @@ function html(c, withPhoto) {
     <p class="role">${esc(c.title)}</p>
     <p class="chips">${c.disciplines.map((d, i) => `<span style="--dot:${DOTS[i]}">${esc(d)}</span>`).join('')}</p>
     <p class="contact">
-      ${link(`tel:${contact.phone.replace(/\s/g, '')}`, contact.phone)}
+      ${contact.phone && link(`tel:${contact.phone.replace(/\s/g, '')}`, contact.phone)}
       ${link(`mailto:${contact.email}`, contact.email)}
       ${link(`https://${contact.web}`, contact.web)}
       ${link(`https://www.${contact.linkedin}`, contact.linkedin)}

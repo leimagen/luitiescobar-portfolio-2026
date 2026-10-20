@@ -13,12 +13,13 @@ Bilingual EN (`/`) and ES (`/es/`), switchable in the header. Minimal light pale
 blobs, glass "lens" circles and geometric patterns (zigzag, dot grid, line triangles).
 
 - **Live:** https://luitiescobar.com and https://www.luitiescobar.com (Worker `luitiescobar`, custom domains) since 2026-10-17.
-  Also on https://luitiescobar.<account>.workers.dev. The old site is still the Cloudflare Pages project
+  Also on the workers.dev preview (URL in MEMORY.private.md). The old site is still the Cloudflare Pages project
   `luitiescobar` at https://luitiescobar.pages.dev (domain removed from it) — rollback only.
 - Studio (live): https://cms.luitiescobar.com (Worker `luitiescobar-cms`, Sanity login with GitHub)
 - Sanity: org `luitiescobar` (`oasl4bj9d`), project **`cp45bc1k`**, dataset `production` (public read).
   Login via the user's GitHub account. Manage at https://www.sanity.io/manage
-- Cloudflare account: (see MEMORY.private.md) (`<account-id>`); wrangler is logged in on this machine.
+- Cloudflare account: details in MEMORY.private.md (git-ignored); wrangler is logged in on this machine.
+- **The repo is public (since 2026-10-20).** Personal or account details go in MEMORY.private.md, never here.
 - Repo: https://github.com/leimagen/luitiescobar-portfolio-2026 (private, branch `main`)
 - Figma: https://www.figma.com/design/LobZm66SS0X4WfSUlcQFLd/luitiescobar-portfolio-2026 (page "Mockups")
 
