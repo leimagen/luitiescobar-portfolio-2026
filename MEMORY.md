@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-21 (video structured data fix for Search Console)
+Last update: 2026-10-21 (contact form backend, www redirect, auto-rebuild prep)
 
 ---
 
@@ -115,7 +115,13 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - Hero title font size scales to the longest line so each language fits the column.
 - Masonry deals cards left-to-right into the shortest column (CSS columns as no-JS fallback).
 - Appreciate block (Behance-style) was removed by the user; only the like button remains.
-- Contact form opens a pre-filled email (mailto) until a real form backend exists.
+- Contact form → `POST /api/contact` (src/pages/api/contact.ts): emails the message through the Email Service
+  binding `EMAIL` (from web@luitiescobar.com, reply-to the visitor) to the Worker secret `CONTACT_TO` (must be a
+  verified Email Routing destination; info@ is forwarded to the same inbox), and pings Telegram. Honeypot field,
+  3 s minimum on the page and 5 messages/hour per anonymous visitor hash (table `contact_rate`, migration 0003).
+  If the API fails, the form falls back to a pre-filled mailto. Nothing from the message is stored.
+- www.luitiescobar.com is served by the tiny Worker `luitiescobar-www` (workers/www-redirect): 301 to the apex,
+  keeping path and query. Deploy it with `npx wrangler deploy --config workers/www-redirect/wrangler.jsonc`.
 - **No em dashes ("—") in any user-facing text** (user: it reads as AI-written). Prose uses commas/colons/periods/
   parentheses; project titles use " - " ("Samsung - Galaxy Watch4 ..."); page titles end in " | Luiti Escobar".
   All Sanity content, code defaults, manifest and scripts were cleaned on 2026-10-17. Check new content for it.
@@ -172,8 +178,12 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - AI Media section complete (3 projects). User suggested going live on luitiescobar.com after this one.
 - [ ] 3D interior design project (next, user will send material)
 - [ ] New motion reel (old Vimeo 1178811549 was taken down over music licensing) — Motion Design shows "Reel coming soon" until then
-- [ ] Rebuild on publish (Sanity webhook → GitHub Action / Cloudflare build)
-- [ ] Contact form backend (Worker + email service)
+- [ ] Rebuild on publish: Cloudflare Workers Builds (Git integration on the `luitiescobar` Worker, build
+      `npm run build`, deploy `npx wrangler deploy`) + a Deploy Hook called by a Sanity webhook
+      (`studio/scripts/createDeployWebhook.ts`, hook URL passed via env, never committed). Code is ready
+      (default public Sanity id, .node-version, clean-clone build verified); waiting for the user to connect
+      the repo and create the hook in the dashboard.
+- [x] Contact form backend: email + Telegram, verified in production (2026-10-21)
 - [ ] Reel video URL for Motion Design
 - [x] Open Graph / Twitter share tags + images (2026-10-17)
 - [x] Ninja 2062 short (23s, several Kling AI shots edited, with audio) added to "From Illustration to AI Cinematic Shot":
@@ -185,5 +195,5 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       phone) + `cv/build.mjs` (HTML in the site's style, printed to A4 PDF with headless Edge). `node cv/build.mjs`
       → cv/out/ (git-ignored): EN and ES, each with and without photo, 2 pages, single column (ATS-readable).
       When the About data changes in Sanity, update cv/content.mjs too (it is not synced automatically).
-- [ ] Redirect www → apex (both serve the site today)
+- [x] www → apex 301 redirect (2026-10-21)
 - [ ] Confirm placeholder dates (2026-03-xx) of re-uploaded Vimeo pieces
