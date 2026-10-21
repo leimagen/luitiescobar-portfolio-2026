@@ -2,10 +2,10 @@ import { createClient, type SanityClient } from '@sanity/client';
 import { createImageUrlBuilder } from '@sanity/image-url';
 
 /**
- * Sanity connection. When PUBLIC_SANITY_PROJECT_ID is not set the site keeps working
- * with the placeholder content in src/data (useful before the CMS has content).
+ * Sanity connection. The project id is public (it is in every image URL), so it has a default and CI builds
+ * need no env vars. While the CMS has no published projects the site shows the placeholders in src/data.
  */
-const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
+const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'cp45bc1k';
 const dataset = import.meta.env.PUBLIC_SANITY_DATASET || 'production';
 
 export const sanityEnabled = Boolean(projectId);

@@ -38,8 +38,11 @@ const types = [...disciplines.map((d) => d.name[lang]), t('form.type.other')];
       <Blob class="cf-blob-a" from="var(--ai-a)" to="var(--ai-b)" blur={60} opacity={0.45} />
       <Blob class="cf-blob-b" from="var(--motion-a)" to="var(--motion-b)" blur={60} opacity={0.4} />
 
-      <!-- No backend yet: the script turns the submission into a pre-filled email (mailto). -->
-      <form class="form" data-contact-form data-to={email} action={`mailto:${email}`} method="post" enctype="text/plain">
+      <!-- Sent by /api/contact (email + Telegram); falls back to a pre-filled email (mailto) if the API fails. -->
+      <form
+        class="form" data-contact-form data-to={email} data-lang={lang} action={`mailto:${email}`} method="post" enctype="text/plain"
+        data-sending={t('form.sending')} data-sent={t('form.sent')} data-error={t('form.error')} data-limit={t('form.limit')}
+      >
         <h2>{t('form.title')}</h2>
 
         <div class="field-row">
@@ -70,22 +73,59 @@ const types = [...disciplines.map((d) => d.name[lang]), t('form.type.other')];
           <textarea name="message" rows="5" required></textarea>
         </label>
 
+        <!-- honeypot: invisible to people, bots tend to fill it -->
+        <label class="hp" aria-hidden="true">{t('form.website')}<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+
         <button type="submit" class="submit">{t('form.send')} <span aria-hidden="true">→</span></button>
-        <p class="note">{t('form.note')}</p>
+        <p class="note" data-status role="status" aria-live="polite">{t('form.note')}</p>
       </form>
     </div>
   </section>
 </BaseLayout>
 
 <script>
+  const opened = Date.now();
   document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!form.reportValidity()) return;
-      const data = new FormData(form);
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('.submit')!;
+    const mailto = (data: FormData) => {
       const subject = `${data.get('type')} - ${data.get('name')}`;
-      const body = `${data.get('message')}\n\n${data.get('name')}\n${data.get('email')}`;
+      const body = `${data.get('message')}
+
+${data.get('name')}
+${data.get('email')}`;
       window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    };
+    const show = (text: string, state: string) => { status.textContent = text; form.dataset.state = state; };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity() || form.dataset.state === 'sending') return;
+      const data = new FormData(form);
+      show(form.dataset.sending!, 'sending');
+      button.disabled = true;
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ ...Object.fromEntries(data), lang: form.dataset.lang, elapsed: Date.now() - opened }),
+        });
+        if (res.ok) {
+          show(form.dataset.sent!, 'sent');
+          form.reset();
+          return;
+        }
+        if (res.status === 429) {
+          show(form.dataset.limit!, 'error');
+          button.disabled = false;
+          return;
+        }
+        throw new Error(String(res.status));
+      } catch {
+        show(form.dataset.error!, 'error');
+        button.disabled = false;
+        setTimeout(() => mailto(data), 900);
+      }
     });
   });
 </script>
@@ -151,6 +191,10 @@ const types = [...disciplines.map((d) => d.name[lang]), t('form.type.other')];
   }
   .submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgb(20 20 20 / .5); }
   .note { font-size: 12px; color: var(--muted); text-align: center; }
+  .form[data-state='sent'] .note { font-size: 15px; color: var(--ink); }
+  .form[data-state='error'] .note { font-size: 14px; color: var(--ai-b); }
+  .submit:disabled { opacity: .6; cursor: default; transform: none; box-shadow: none; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
   @media (min-width: 768px) {
     .field-row { grid-template-columns: 1fr 1fr; }

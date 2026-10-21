@@ -14,11 +14,14 @@
       "migrations_dir": "migrations"
     }
   ],
+  // Contact form email. No fixed destination here (public repo): the Worker secret CONTACT_TO holds it,
+  // and it must be a verified Email Routing destination.
+  "send_email": [{ "name": "EMAIL" }],
   // Live on the main domain since 2026-10-17 (replaced the old Cloudflare Pages site "luitiescobar").
   // workers.dev stays on as a secondary preview URL.
   "workers_dev": true,
   "routes": [
-    { "pattern": "luitiescobar.com", "custom_domain": true },
-    { "pattern": "www.luitiescobar.com", "custom_domain": true }
+    // www.luitiescobar.com belongs to workers/www-redirect (301 to the apex)
+    { "pattern": "luitiescobar.com", "custom_domain": true }
   ]
 }

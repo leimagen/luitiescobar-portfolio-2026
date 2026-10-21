@@ -7,11 +7,25 @@ import { env } from 'cloudflare:workers';
  */
 const MAX_PER_HOUR = 30;
 
-const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+export const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/** Sends an HTML-formatted message to the owner's Telegram chat. Resolves to false when not configured or on error. */
+export async function sendTelegram(text: string, { linkPreview = true } = {}): Promise<boolean> {
+  // accept the token even if it was pasted with a "bot" prefix, quotes or as part of an API URL
+  const token = env.TELEGRAM_BOT_TOKEN?.match(/\d+:[\w-]{30,}/)?.[0];
+  if (!token || !env.TELEGRAM_CHAT_ID) return false;
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text, parse_mode: 'HTML', disable_web_page_preview: !linkPreview }),
+  });
+  if (!res.ok) console.error('telegram', res.status, await res.text());
+  return res.ok;
+}
 
 /** Spanish project title straight from Sanity, so new projects work without a rebuild. */
 async function projectTitle(slug: string): Promise<string> {
-  const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
+  const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'cp45bc1k';
   const dataset = import.meta.env.PUBLIC_SANITY_DATASET || 'production';
   if (!projectId) return slug;
   const query = encodeURIComponent('*[_type == "project" && slug.current == $slug][0]{ "es": title.es, "en": title.en }');
@@ -72,13 +86,5 @@ export async function notifyLike({ slug, visitor, count, country, city, userAgen
     url,
   ].filter((line) => line !== null).join('\n');
 
-  // accept the token even if it was pasted with a "bot" prefix, quotes or as part of an API URL
-  const token = env.TELEGRAM_BOT_TOKEN.match(/\d+:[\w-]{30,}/)?.[0];
-  if (!token) return console.error('telegram: TELEGRAM_BOT_TOKEN does not look like a bot token');
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text, parse_mode: 'HTML' }),
-  });
-  if (!res.ok) console.error('telegram', res.status, await res.text());
+  await sendTelegram(text);
 }

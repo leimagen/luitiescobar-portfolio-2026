@@ -12,8 +12,22 @@ declare module 'cloudflare:workers' {
     prepare(query: string): D1PreparedStatement;
     batch<T = unknown>(statements: D1PreparedStatement[]): Promise<D1Result<T>[]>;
   }
+  interface SendEmail {
+    send(message: {
+      to: string;
+      from: string | { email: string; name?: string };
+      subject: string;
+      text?: string;
+      html?: string;
+      replyTo?: string | { email: string; name?: string };
+    }): Promise<{ messageId: string }>;
+  }
   export const env: {
     DB: D1Database;
+    /** Email Service binding: sends to verified Email Routing destinations only */
+    EMAIL?: SendEmail;
+    /** where contact form messages go (wrangler secret; must be a verified destination) */
+    CONTACT_TO?: string;
     /** salt for the anonymous visitor hash (wrangler secret) */
     LIKES_SALT?: string;
     /** Telegram like notifications (wrangler secrets, optional) */

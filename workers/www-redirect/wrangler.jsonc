@@ -1,0 +1,10 @@
+{
+  // Tiny Worker that owns www.luitiescobar.com and redirects it to the apex domain.
+  // Deploy: npx wrangler deploy --config workers/www-redirect/wrangler.jsonc
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "luitiescobar-www",
+  "main": "index.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "routes": [{ "pattern": "www.luitiescobar.com", "custom_domain": true }]
+}

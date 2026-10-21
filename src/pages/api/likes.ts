@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { notifyLike } from '../../lib/notify';
+import { visitorId } from '../../lib/visitor';
 
 // Runs on the Worker (everything else on the site is prerendered).
 export const prerender = false;
@@ -14,15 +15,6 @@ const json = (data: unknown, status = 200) =>
     status,
     headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
   });
-
-/** Anonymous visitor id: salted SHA-256 of IP + user agent. Nothing personal is stored. */
-async function visitorId(request: Request) {
-  const ip = request.headers.get('cf-connecting-ip') ?? '';
-  const ua = request.headers.get('user-agent') ?? '';
-  const data = new TextEncoder().encode(`${env.LIKES_SALT ?? 'luitiescobar'}|${ip}|${ua}`);
-  const hash = await crypto.subtle.digest('SHA-256', data);
-  return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('');
-}
 
 /** GET /api/likes?slugs=a,b,c → { counts: { a: 3 }, liked: ["a"] } */
 export const GET: APIRoute = async ({ request, url }) => {
