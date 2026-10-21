@@ -51,8 +51,22 @@ const schema = [{
   genre: d.word.en.join(' '),
   inLanguage: lang,
   creator: { '@id': 'https://luitiescobar.com/#person' },
-  ...(video ? { video: { '@type': 'VideoObject', name: title, description: cs.lead || title, thumbnailUrl: shareImg, uploadDate: p.date, contentUrl: new URL(video, Astro.site).href } } : {}),
+  ...(video ? { video: videoSchema(video) } : {}),
 }];
+
+/** schema.org VideoObject: Google wants a full datetime with timezone, and a file URL only for real media files */
+function videoSchema(src: string) {
+  const url = new URL(src, Astro.site).href;
+  const file = /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url);
+  return {
+    '@type': 'VideoObject',
+    name: title,
+    description: cs.lead || title,
+    thumbnailUrl: shareImg,
+    uploadDate: `${p.date || '2026-10-17'}T12:00:00+00:00`,
+    ...(file ? { contentUrl: url } : { embedUrl: url }),
+  };
+}
 const gradient = (c: [string, string]) => `linear-gradient(135deg, ${c[0]}, ${c[1]})`;
 ---
 

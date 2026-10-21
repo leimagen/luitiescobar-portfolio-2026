@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-19 (CV EN/ES generator)
+Last update: 2026-10-21 (video structured data fix for Search Console)
 
 ---
 
@@ -127,7 +127,8 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
 - Analytics/SEO (ported from the old site's index.html, github.com/leimagen/luitiescobar): Google Analytics 4
   **G-J1EW2HGLJB** (`src/lib/seo.ts`, production builds only, **loaded only after consent**, see below),
   meta author/keywords, schema.org JSON-LD (Person + WebSite on every page, CreativeWork + VideoObject on projects),
-  hreflang incl. x-default, `/sitemap.xml` (src/pages/sitemap.xml.ts, EN+ES with alternates), `public/robots.txt`.
+  hreflang incl. x-default (VideoObject `uploadDate` must be a full datetime with timezone; mp4 → contentUrl,
+  Vimeo/YouTube → embedUrl: fixed 2026-10-21 after a Search Console warning), `/sitemap.xml` (src/pages/sitemap.xml.ts, EN+ES with alternates), `public/robots.txt`.
   Search Console: submit https://luitiescobar.com/sitemap.xml there (not done by Claude; needs the user's Google login).
 - Cookie consent (GDPR/AEPD): `src/components/CookieConsent.astro` (in BaseLayout). GA4 is injected only after
   "Accept"; "Reject" has the same weight; choice in localStorage `consent:analytics`; rejecting later deletes the
