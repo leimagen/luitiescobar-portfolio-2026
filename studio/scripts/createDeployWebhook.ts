@@ -20,13 +20,13 @@ const cli = getCliClient({ apiVersion: '2021-10-04' });
 const { projectId } = cli.config();
 const api = cli.withConfig({ useProjectHostname: false, apiHost: 'https://api.sanity.io' });
 
-const existing = await api.request<{ id: string; name: string }[]>({ uri: `/hooks/projects/${projectId}` });
+const existing = await api.request<{ id: string; name: string }[]>({ url: `/hooks/projects/${projectId}` });
 for (const h of existing.filter((h) => h.name === NAME)) {
-  await api.request({ uri: `/hooks/projects/${projectId}/${h.id}`, method: 'DELETE' });
+  await api.request({ url: `/hooks/projects/${projectId}/${h.id}`, method: 'DELETE' });
 }
 
 await api.request({
-  uri: `/hooks/projects/${projectId}`,
+  url: `/hooks/projects/${projectId}`,
   method: 'POST',
   body: {
     type: 'document',
@@ -39,7 +39,6 @@ await api.request({
     // published documents only (drafts never trigger it)
     rule: { on: ['create', 'update', 'delete'], filter: '_type in ["project", "siteSettings"]', projection: '{_id, _type}' },
     includeDrafts: false,
-    isDisabled: false,
   },
 });
 console.log(`Webhook "${NAME}" created for project ${projectId}.`);
