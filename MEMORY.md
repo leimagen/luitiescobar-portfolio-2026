@@ -182,7 +182,8 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       at build time (src/lib/reelPoster.ts), so nothing reaches Vimeo before play; a new Vimeo thumbnail needs a rebuild.
 - [ ] Final motion reel (user will replace the preliminary one; old Vimeo 1178811549 was taken down over music licensing)
 - [x] Rebuild on publish (2026-10-22): Cloudflare Workers Builds is connected to the GitHub repo (branch main,
-      `npm run build` + `npx wrangler deploy`), so every push to main deploys. Publishing a `project` or
+      `npm run build` + `npx wrangler deploy`). **Pushes to main do NOT deploy** (checked 2026-10-22 and 2026-11-05,
+      cause unknown, check the Build settings in the dashboard): after a code change, deploy by hand. Publishing a `project` or
       `siteSettings` document fires the Sanity webhook "Rebuild luitiescobar.com" → Workers Builds Deploy Hook
       (created with studio/scripts/createDeployWebhook.ts; hook URL never committed). Verified end to end:
       webhook 200, new deployment ~1 min later. Manual `npx wrangler deploy` still works (clean dist first).
