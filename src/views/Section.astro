@@ -6,12 +6,14 @@ import MasonryGrid from '../components/MasonryGrid.astro';
 import { disciplines, disciplineById, type Discipline } from '../data/disciplines';
 import { projectsFor } from '../data/projects';
 import { getLang, localizePath, useTranslations } from '../i18n/utils';
+import { vimeoPoster } from '../lib/reelPoster';
 
 interface Props {
   discipline: Discipline;
 }
 
 const { discipline: d } = Astro.props;
+const reelPosterSrc = d.reel?.poster ?? (await vimeoPoster(d.reel?.src));
 const lang = getLang(Astro.currentLocale);
 const t = useTranslations(lang);
 
@@ -38,7 +40,7 @@ const filters = d.subcategories.filter((s) => items.some((p) => p.subcategory ==
     <div class:list={['sec-media', { 'has-reel': !!d.reel }]}>
       <Blob class="sec-blob-a" from={d.colors[0]} to={d.colors[1]} blur={50} opacity={0.7} />
       <Blob class="sec-blob-b" from={accent.colors[0]} to={accent.colors[1]} blur={40} opacity={0.6} />
-      {d.reel && <Reel title={d.reel.title} src={d.reel.src} poster={d.reel.poster} />}
+      {d.reel && <Reel title={d.reel.title} src={d.reel.src} poster={reelPosterSrc} />}
     </div>
   </section>
 

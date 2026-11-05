@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-10-22 (auto-rebuild on publish live)
+Last update: 2026-11-05 (preliminary motion reel live)
 
 ---
 
@@ -177,14 +177,16 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       only the band lineup reference (BANDA_lineup), element sheets and stills.
 - AI Media section complete (3 projects). User suggested going live on luitiescobar.com after this one.
 - [ ] 3D interior design project (next, user will send material)
-- [ ] New motion reel (old Vimeo 1178811549 was taken down over music licensing) — Motion Design shows "Reel coming soon" until then
+- [x] Preliminary motion reel live on Motion Design (2026-11-05): Vimeo 1243610262, set in Site settings → Motion → reel.
+      To replace it, paste the new Vimeo link there and publish. Poster = the Vimeo thumbnail, downloaded and optimized
+      at build time (src/lib/reelPoster.ts), so nothing reaches Vimeo before play; a new Vimeo thumbnail needs a rebuild.
+- [ ] Final motion reel (user will replace the preliminary one; old Vimeo 1178811549 was taken down over music licensing)
 - [x] Rebuild on publish (2026-10-22): Cloudflare Workers Builds is connected to the GitHub repo (branch main,
       `npm run build` + `npx wrangler deploy`), so every push to main deploys. Publishing a `project` or
       `siteSettings` document fires the Sanity webhook "Rebuild luitiescobar.com" → Workers Builds Deploy Hook
       (created with studio/scripts/createDeployWebhook.ts; hook URL never committed). Verified end to end:
       webhook 200, new deployment ~1 min later. Manual `npx wrangler deploy` still works (clean dist first).
 - [x] Contact form backend: email + Telegram, verified in production (2026-10-21)
-- [ ] Reel video URL for Motion Design
 - [x] Open Graph / Twitter share tags + images (2026-10-17)
 - [x] Ninja 2062 short (23s, several Kling AI shots edited, with audio) added to "From Illustration to AI Cinematic Shot":
       header video + cover frame, paragraph in the Ninja section, Fantasy Mage loop moved into the body.

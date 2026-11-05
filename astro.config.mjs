@@ -14,6 +14,8 @@ export default defineConfig({
     imageService: 'compile',
     prerenderEnvironment: 'node',
   }),
+  // reel posters are fetched from Vimeo and optimized at build time (src/lib/reelPoster.ts)
+  image: { domains: ['i.vimeocdn.com'] },
   i18n: {
     locales: ['en', 'es'],
     defaultLocale: 'en',
