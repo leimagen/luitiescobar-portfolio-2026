@@ -183,7 +183,9 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       to 1920 px JPG into studio/scripts/interiors/.cache (git-ignored) and imported by
       studio/scripts/interiors/importInteriors.ts. CS-05 cover and neighbourhood shots are frames from its promo film.
 - [x] The 3 interiors projects published 2026-11-19 (user's call); the webhook rebuild put them live in ~1 min.
-- [ ] CS-05 promo video: the user is uploading it to Vimeo; then set the project's `video` field to the link
+- [x] CS-05 promo video live (2026-11-19): Vimeo 1248488349 in the project's `video` field, poster = the cover.
+      Vimeo's oEmbed API returned 404 for it right after upload even though the player works: harmless here
+      (project videos use the Sanity cover as poster), but the Motion reel poster relies on oEmbed.
 - [x] Preliminary motion reel live on Motion Design (2026-11-05): Vimeo 1243610262, set in Site settings → Motion → reel.
       To replace it, paste the new Vimeo link there and publish. Poster = the Vimeo thumbnail, downloaded and optimized
       at build time (src/lib/reelPoster.ts), so nothing reaches Vimeo before play; a new Vimeo thumbnail needs a rebuild.
