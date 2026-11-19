@@ -183,6 +183,8 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       to 1920 px JPG into studio/scripts/interiors/.cache (git-ignored) and imported by
       studio/scripts/interiors/importInteriors.ts. CS-05 cover and neighbourhood shots are frames from its promo film.
 - [x] The 3 interiors projects published 2026-11-19 (user's call); the webhook rebuild put them live in ~1 min.
+- [x] Fresno House cover replaced (2026-11-19) by an image the user supplied (photoreal street view with people and
+      a parked car); the original Blender day render is no longer used on the page.
 - [x] CS-05 promo video live (2026-11-19): Vimeo 1248488349 in the project's `video` field, poster = the cover.
       Vimeo's oEmbed API returned 404 for it right after upload even though the player works: harmless here
       (project videos use the Sanity cover as poster), but the Motion reel poster relies on oEmbed.
