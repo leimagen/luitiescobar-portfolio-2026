@@ -182,7 +182,8 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       "american-farmhouse" is excluded on purpose. Texts condensed from the process notes; images selected, converted
       to 1920 px JPG into studio/scripts/interiors/.cache (git-ignored) and imported by
       studio/scripts/interiors/importInteriors.ts. CS-05 cover and neighbourhood shots are frames from its promo film.
-- [ ] User reviews and publishes the 3 interiors drafts; CS-05 promo video goes on Vimeo, then set its `video` field
+- [x] The 3 interiors projects published 2026-11-19 (user's call); the webhook rebuild put them live in ~1 min.
+- [ ] CS-05 promo video: the user is uploading it to Vimeo; then set the project's `video` field to the link
 - [x] Preliminary motion reel live on Motion Design (2026-11-05): Vimeo 1243610262, set in Site settings → Motion → reel.
       To replace it, paste the new Vimeo link there and publish. Poster = the Vimeo thumbnail, downloaded and optimized
       at build time (src/lib/reelPoster.ts), so nothing reaches Vimeo before play; a new Vimeo thumbnail needs a rebuild.
