@@ -2,7 +2,7 @@
 
 Living log of what has been built, where everything lives and what's pending.
 **Update this file at every milestone** (new page/feature, deploy, CMS change, decision).
-Last update: 2026-11-05 (preliminary motion reel live)
+Last update: 2026-11-19 (3D interiors projects as drafts)
 
 ---
 
@@ -176,7 +176,13 @@ Default copy lives in pure modules `src/data/siteDefaults.ts` and `src/data/disc
       **Privacy rule:** individual character sheets of band members are NEVER published (identity cloning risk);
       only the band lineup reference (BANDA_lineup), element sheets and stills.
 - AI Media section complete (3 projects). User suggested going live on luitiescobar.com after this one.
-- [ ] 3D interior design project (next, user will send material)
+- [x] 3D Interiors & Architecture (2026-11-19), three Sanity **drafts**: Modern House with Pool (`modern-house-with-pool`,
+      first archviz, Aug 2026), Fresno House (`fresno-house`) and CS-05 Townhouse (`cs05-townhouse`, featured on the 3D
+      card). Source: the user's local folder `ainteriorismo/projects/<name>/case-study` (process.en/es.md + images);
+      "american-farmhouse" is excluded on purpose. Texts condensed from the process notes; images selected, converted
+      to 1920 px JPG into studio/scripts/interiors/.cache (git-ignored) and imported by
+      studio/scripts/interiors/importInteriors.ts. CS-05 cover and neighbourhood shots are frames from its promo film.
+- [ ] User reviews and publishes the 3 interiors drafts; CS-05 promo video goes on Vimeo, then set its `video` field
 - [x] Preliminary motion reel live on Motion Design (2026-11-05): Vimeo 1243610262, set in Site settings → Motion → reel.
       To replace it, paste the new Vimeo link there and publish. Poster = the Vimeo thumbnail, downloaded and optimized
       at build time (src/lib/reelPoster.ts), so nothing reaches Vimeo before play; a new Vimeo thumbnail needs a rebuild.
